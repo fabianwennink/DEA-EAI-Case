@@ -1,24 +1,22 @@
 package nl.fabianwennink.dea.tracks.dto;
 
-import nl.fabianwennink.dea.tracks.Track;
-
 import java.util.List;
 
 public class TracksResponseDTO {
 
-    private List<Track> tracks;
+    private List<TrackDTO> tracks;
 
-    public TracksResponseDTO(List<Track> tracks) {
+    public TracksResponseDTO(List<TrackDTO> tracks) {
         this.tracks = tracks;
     }
 
     /* GETTERS AND SETTERS REQUIRED FOR API TO WORK */
 
-    public List<Track> getTracks() {
+    public List<TrackDTO> getTracks() {
         return tracks;
     }
 
-    public void setTracks(List<Track> tracks) {
+    public void setTracks(List<TrackDTO> tracks) {
         this.tracks = tracks;
     }
 }

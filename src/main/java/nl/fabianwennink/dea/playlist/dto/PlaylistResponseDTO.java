@@ -1,26 +1,24 @@
 package nl.fabianwennink.dea.playlist.dto;
 
-import nl.fabianwennink.dea.playlist.Playlist;
-
 import java.util.List;
 
-public class PlaylistReponseDTO {
+public class PlaylistResponseDTO {
 
-    private List<Playlist> playlists;
+    private List<PlaylistDTO> playlists;
     private int length;
 
-    public PlaylistReponseDTO(List<Playlist> playlists, int length) {
+    public PlaylistResponseDTO(List<PlaylistDTO> playlists, int length) {
         this.playlists = playlists;
         this.length = length;
     }
 
     /* GETTERS AND SETTERS REQUIRED FOR API TO WORK */
 
-    public List<Playlist> getPlaylists() {
+    public List<PlaylistDTO> getPlaylists() {
         return playlists;
     }
 
-    public void setPlaylists(List<Playlist> playlists) {
+    public void setPlaylists(List<PlaylistDTO> playlists) {
         this.playlists = playlists;
     }
 

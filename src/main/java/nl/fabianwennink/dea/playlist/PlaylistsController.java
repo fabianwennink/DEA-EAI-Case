@@ -1,14 +1,12 @@
 package nl.fabianwennink.dea.playlist;
 
 import nl.fabianwennink.dea.Spotitube;
-import nl.fabianwennink.dea.playlist.dto.PlaylistReponseDTO;
+import nl.fabianwennink.dea.playlist.dto.PlaylistResponseDTO;
 import nl.fabianwennink.dea.tracks.dto.TracksResponseDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.List;
 
 @Path("/playlists")
 public class PlaylistsController {
@@ -18,9 +16,9 @@ public class PlaylistsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylists(@QueryParam("token") String token) {
         if(token.equals(Spotitube.USER_TOKEN)) {
-            PlaylistReponseDTO playlistReponseDTO = new PlaylistReponseDTO(Spotitube.getInstance().getPlaylists(), 103974);
+            PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(Spotitube.getInstance().getPlaylists(), 103974);
 
-            return Response.ok(playlistReponseDTO).build();
+            return Response.ok(playlistResponseDTO).build();
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();
@@ -38,7 +36,13 @@ public class PlaylistsController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{playlist_id}")
     public Response deletePlaylist(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
-        return null;
+        if(token.equals(Spotitube.USER_TOKEN)) {
+            if(playlistId > 0) {
+
+            }
+        }
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     // Updates a playlist
