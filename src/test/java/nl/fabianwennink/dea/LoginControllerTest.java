@@ -3,7 +3,6 @@ package nl.fabianwennink.dea;
 import nl.fabianwennink.dea.login.dto.LoginRequestDTO;
 import nl.fabianwennink.dea.login.LoginController;
 import nl.fabianwennink.dea.login.dto.LoginResponseDTO;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
