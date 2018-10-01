@@ -1,9 +1,13 @@
-package nl.fabianwennink.dea.playlist;
+package nl.fabianwennink.dea.controllers.playlist;
 
 import nl.fabianwennink.dea.Spotitube;
-import nl.fabianwennink.dea.playlist.dto.PlaylistResponseDTO;
-import nl.fabianwennink.dea.tracks.dto.TracksResponseDTO;
+import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
+import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistResponseDTO;
+import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
+import nl.fabianwennink.dea.services.PlaylistService;
+import nl.fabianwennink.dea.services.UserService;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -11,12 +15,17 @@ import javax.ws.rs.core.Response;
 @Path("/playlists")
 public class PlaylistsController {
 
+    @Inject
+    private UserService userService;
+    @Inject
+    private PlaylistService playlistService;
+
     // Returns all playlists
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylists(@QueryParam("token") String token) {
-        if(token.equals(Spotitube.USER_TOKEN)) {
-            PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(Spotitube.getInstance().getPlaylists(), 103974);
+        if(userService.tokenMatches(token)) {
+            PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlistService.getPlaylists(), 103974);
 
             return Response.ok(playlistResponseDTO).build();
         }
@@ -36,7 +45,7 @@ public class PlaylistsController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{playlist_id}")
     public Response deletePlaylist(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
-        if(token.equals(Spotitube.USER_TOKEN)) {
+        if(userService.tokenMatches(token)) {
             if(playlistId > 0) {
 
             }
@@ -58,8 +67,9 @@ public class PlaylistsController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{playlist_id}/tracks")
     public Response getPlaylistTracks(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
-        if(token.equals(Spotitube.USER_TOKEN)) {
-            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(Spotitube.getInstance().getTrackList());
+        if(userService.tokenMatches(token)) {
+            PlaylistDTO playlist = playlistService.getPlaylistById(playlistId);
+            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(playlist.getTracks());
 
             return Response.ok(tracksResponseDTO).build();
         }

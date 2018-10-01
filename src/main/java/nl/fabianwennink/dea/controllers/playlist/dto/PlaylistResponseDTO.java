@@ -1,4 +1,4 @@
-package nl.fabianwennink.dea.playlist.dto;
+package nl.fabianwennink.dea.controllers.playlist.dto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package nl.fabianwennink.dea.login.dto;
+package nl.fabianwennink.dea.controllers.login.dto;
 
 public class LoginResponseDTO {
 

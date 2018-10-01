@@ -1,4 +1,4 @@
-package nl.fabianwennink.dea.tracks.dto;
+package nl.fabianwennink.dea.controllers.tracks.dto;
 
 public class TrackDTO {
 

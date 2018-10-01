@@ -1,7 +1,8 @@
 package nl.fabianwennink.dea;
 
-import nl.fabianwennink.dea.login.LoginController;
-import nl.fabianwennink.dea.login.dto.LoginRequestDTO;
+import nl.fabianwennink.dea.controllers.login.LoginController;
+import nl.fabianwennink.dea.controllers.login.dto.LoginRequestDTO;
+import nl.fabianwennink.dea.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,8 @@ public class LoginControllerTest {
     @Test
     public void TryAuthenticatedUser() {
         LoginRequestDTO requestDTO = new LoginRequestDTO();
-        requestDTO.setUser(Spotitube.USERNAME);
-        requestDTO.setPassword(Spotitube.PASSWORD);
+        requestDTO.setUser(UserService.USERNAME);
+        requestDTO.setPassword(UserService.PASSWORD);
 
         Response response = loginController.login(requestDTO);
 

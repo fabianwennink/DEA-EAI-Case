@@ -1,6 +1,6 @@
-package nl.fabianwennink.dea.playlist.dto;
+package nl.fabianwennink.dea.controllers.playlist.dto;
 
-import nl.fabianwennink.dea.tracks.dto.TrackDTO;
+import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
 
 import java.util.List;
 
