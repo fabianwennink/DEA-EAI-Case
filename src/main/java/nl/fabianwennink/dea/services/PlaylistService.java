@@ -21,11 +21,7 @@ public class PlaylistService {
         playlists.add(new PlaylistDTO(3, "My Great Playlist", true, trackList));
     }
 
-    public List<PlaylistDTO> getPlaylists() {
-        return this.playlists;
-    }
-
-    public PlaylistDTO getPlaylistById(int playlistId) {
+    public PlaylistDTO getById(int playlistId) {
         for(PlaylistDTO playlist : playlists) {
             if(playlist.getId() == playlistId) {
                 return playlist;
@@ -33,5 +29,9 @@ public class PlaylistService {
         }
 
         return null;
+    }
+
+    public List<PlaylistDTO> getAll() {
+        return this.playlists;
     }
 }

@@ -1,6 +1,5 @@
 package nl.fabianwennink.dea.controllers.playlist;
 
-import nl.fabianwennink.dea.Spotitube;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistResponseDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
@@ -25,7 +24,7 @@ public class PlaylistsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylists(@QueryParam("token") String token) {
         if(userService.tokenMatches(token)) {
-            PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlistService.getPlaylists(), 103974);
+            PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlistService.getAll(), 103974);
 
             return Response.ok(playlistResponseDTO).build();
         }
@@ -68,7 +67,7 @@ public class PlaylistsController {
     @Path("/{playlist_id}/tracks")
     public Response getPlaylistTracks(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
         if(userService.tokenMatches(token)) {
-            PlaylistDTO playlist = playlistService.getPlaylistById(playlistId);
+            PlaylistDTO playlist = playlistService.getById(playlistId);
             TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(playlist.getTracks());
 
             return Response.ok(tracksResponseDTO).build();

@@ -24,8 +24,8 @@ public class LoginControllerTest {
     @Test
     public void TryAuthenticatedUser() {
         LoginRequestDTO requestDTO = new LoginRequestDTO();
-        requestDTO.setUser(UserService.USERNAME);
-        requestDTO.setPassword(UserService.PASSWORD);
+        //requestDTO.setUser(UserService.USERNAME);
+        //requestDTO.setPassword(UserService.PASSWORD);
 
         Response response = loginController.login(requestDTO);
 
