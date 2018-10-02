@@ -2,14 +2,17 @@ package nl.fabianwennink.dea.controllers.playlist;
 
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistResponseDTO;
+import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
 import nl.fabianwennink.dea.services.PlaylistService;
+import nl.fabianwennink.dea.services.TrackService;
 import nl.fabianwennink.dea.services.UserService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/playlists")
 public class PlaylistsController {
@@ -18,6 +21,8 @@ public class PlaylistsController {
     private UserService userService;
     @Inject
     private PlaylistService playlistService;
+    @Inject
+    private TrackService trackService;
 
     // Returns all playlists
     @GET
@@ -81,10 +86,16 @@ public class PlaylistsController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{playlist_id}/tracks/{track_id}")
     public Response deleteTrackFromPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {
+        if(userService.tokenMatches(token)) {
+            PlaylistDTO playlist = playlistService.getById(playlistId);
+            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(playlist.getTracks());
 
-        System.out.println(trackId);
+            List<TrackDTO> tracks = trackService.deleteTrackWithId(tracksResponseDTO.getTracks(), trackId);
 
-        // return playlist - id
+            // set tracks for playlist
+
+            return Response.ok().build();
+        }
 
         return null;
     }
