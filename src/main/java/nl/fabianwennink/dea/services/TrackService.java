@@ -6,10 +6,6 @@ import java.util.List;
 
 public class TrackService {
 
-    public TrackService() {
-
-    }
-
     public TrackDTO getTrackByIdFromPlaylist(List<TrackDTO> tracks, int id) {
         for(TrackDTO track : tracks) {
             if(track.getId() == id) {
