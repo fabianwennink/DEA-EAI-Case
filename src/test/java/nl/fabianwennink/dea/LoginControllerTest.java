@@ -6,15 +6,16 @@ import nl.fabianwennink.dea.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import javax.ws.rs.core.Response;
 
 public class LoginControllerTest {
 
-    @InjectMocks
-    LoginController loginController;
+    @Mock
+    private UserService userService;
 
     @BeforeEach
     public void setUp() {
@@ -22,10 +23,15 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void TryAuthenticatedUser() {
+    public void tryAuthenticateCorrectUser() {
+        LoginController loginController = new LoginController();
+        loginController.setUserService(userService);
+
+        Mockito.when(userService.shouldAuthenticate(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+
         LoginRequestDTO requestDTO = new LoginRequestDTO();
-        //requestDTO.setUser(UserService.USERNAME);
-        //requestDTO.setPassword(UserService.PASSWORD);
+        requestDTO.setUser("fabian");
+        requestDTO.setPassword("TEST");
 
         Response response = loginController.login(requestDTO);
 
@@ -33,10 +39,15 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void TryInvalidUserInfo() {
+    public void tryAuthenticateIncorrectUser() {
+        LoginController loginController = new LoginController();
+        loginController.setUserService(userService);
+
+        Mockito.when(userService.shouldAuthenticate(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+
         LoginRequestDTO requestDTO = new LoginRequestDTO();
-        requestDTO.setUser("Username");
-        requestDTO.setPassword("Password");
+        requestDTO.setUser("WrongUsername");
+        requestDTO.setPassword("CorrectUsername");
 
         Response response = loginController.login(requestDTO);
 

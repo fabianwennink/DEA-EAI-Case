@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 @Path("/login")
 public class LoginController {
 
-    @Inject
     private UserService userService;
 
     @POST
@@ -31,5 +30,10 @@ public class LoginController {
         }
 
         return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @Inject
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

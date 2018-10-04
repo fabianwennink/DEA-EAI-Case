@@ -13,7 +13,6 @@ import javax.xml.ws.Response;
 @Path("/tracks")
 public class TracksController {
 
-    @Inject
     private UserService userService;
 
     @GET
@@ -24,5 +23,10 @@ public class TracksController {
         }
 
         return null;
+    }
+
+    @Inject
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

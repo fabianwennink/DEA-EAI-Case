@@ -11,13 +11,6 @@ public class PlaylistDTO {
     private boolean owner;
     private List<TrackDTO> tracks;
 
-    public PlaylistDTO(int id, String name, boolean owner, List<TrackDTO> tracks) {
-        this.id = id;
-        this.name = name;
-        this.owner = owner;
-        this.tracks = tracks;
-    }
-
     /* GETTERS AND SETTERS REQUIRED FOR API TO WORK */
 
     public int getId() {
