@@ -2,31 +2,34 @@ package nl.fabianwennink.dea.database.util;
 
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DatabaseProperties {
 
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private static DatabaseProperties dbProperties;
     private Properties properties;
 
-    public DatabaseProperties() {
+    private DatabaseProperties() {
         properties = new Properties();
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("database.properties"));
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Can't access property file database.properties", e);
+            System.out.println(e.getMessage());
         }
     }
 
-    public String driver()
-    {
-        return properties.getProperty("driver");
+    public static String getDriver() {
+        return getInstance().properties.getProperty("driver");
     }
 
-    public String connectionString()
-    {
-        return properties.getProperty("connectionString");
+    public static String getConnectionString() {
+        return getInstance().properties.getProperty("connectionString");
     }
 
+    public static DatabaseProperties getInstance() {
+        if(dbProperties == null) {
+            dbProperties = new DatabaseProperties();
+        }
+
+        return dbProperties;
+    }
 }

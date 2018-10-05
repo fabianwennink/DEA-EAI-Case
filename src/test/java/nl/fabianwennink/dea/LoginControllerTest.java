@@ -27,7 +27,7 @@ public class LoginControllerTest {
         LoginController loginController = new LoginController();
         loginController.setUserService(userService);
 
-        Mockito.when(userService.authenticate(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+        Mockito.when(userService.authenticate(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 
         LoginRequestDTO requestDTO = new LoginRequestDTO();
         requestDTO.setUser("fabian");
@@ -43,7 +43,7 @@ public class LoginControllerTest {
         LoginController loginController = new LoginController();
         loginController.setUserService(userService);
 
-        Mockito.when(userService.authenticate(Mockito.anyString(), Mockito.anyString())).thenReturn(false);
+        Mockito.when(userService.authenticate(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 
         LoginRequestDTO requestDTO = new LoginRequestDTO();
         requestDTO.setUser("WrongUsername");
