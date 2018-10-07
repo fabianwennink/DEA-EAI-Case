@@ -1,4 +1,4 @@
-package nl.fabianwennink.dea.database.util;
+package nl.fabianwennink.dea.database;
 
 import java.io.IOException;
 import java.util.Properties;

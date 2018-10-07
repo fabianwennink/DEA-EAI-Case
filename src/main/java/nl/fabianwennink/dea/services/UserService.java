@@ -1,14 +1,26 @@
 package nl.fabianwennink.dea.services;
 
 import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
-import nl.fabianwennink.dea.database.dao.LoginDAO;
+import nl.fabianwennink.dea.database.dao.UserDAO;
+import nl.fabianwennink.dea.database.entities.User;
 
 public class UserService {
 
     private static final String USER_TOKEN = "06e8dc08-fdc8-45c5-8";
 
     public LoginResponseDTO authenticate(String username, String password) {
-        return new LoginDAO().getUser(username, password);
+        User user = new UserDAO().getUser(username, password);
+
+        if(user != null) {
+            // TODO verander in EntityToDTO mapper.
+            LoginResponseDTO response = new LoginResponseDTO();
+            response.setUser(user.getName());
+            response.setToken(user.getToken());
+
+            return response;
+        }
+
+        return null;
     }
 
     // TODO Remove hard-coded token, store somewhere idk

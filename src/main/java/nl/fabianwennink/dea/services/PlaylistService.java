@@ -7,26 +7,7 @@ import java.util.List;
 
 public class PlaylistService {
 
-    public boolean addNew(PlaylistDTO playlist) {
-        if(getById(playlist.getId()) == null) {
-            PlaylistDAO playlists = new PlaylistDAO();
-
-
-
-            //playlists.add(playlist);
-            return true;
-        }
-
-        return false;
-    }
-
-    public List<PlaylistDTO> deleteWithId(int id) {
-        //playlists.removeIf(playlist -> playlist.getId() == id);
-
-        //return playlists;
-        return null;
-    }
-
+    // TODO why loop, just request single one
     public PlaylistDTO getById(int playlistId) {
         PlaylistDAO playlistDAO = new PlaylistDAO();
         List<PlaylistDTO> playlists = playlistDAO.getAll();
@@ -41,8 +22,6 @@ public class PlaylistService {
     }
 
     public List<PlaylistDTO> getAll() {
-        PlaylistDAO playlistDAO = new PlaylistDAO();
-
-        return playlistDAO.getAll();
+        return new PlaylistDAO().getAll();
     }
 }

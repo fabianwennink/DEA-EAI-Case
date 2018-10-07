@@ -25,43 +25,32 @@ public class PlaylistTracksController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylistTracks(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
         if(userService.tokenMatches(token)) {
-            PlaylistDTO playlist = playlistService.getById(playlistId);
-            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(playlist.getTracks());
-
-            return Response.ok(tracksResponseDTO).build();
+//            TracksResponseDTO tracks = trackService.get
+//
+//            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(playlist.getTracks());
+//
+//            return Response.ok(tracksResponseDTO).build();
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     // Deletes a track from a playlist
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{track_id}")
-    public Response deleteTrackFromPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {
-        if(userService.tokenMatches(token)) {
-            PlaylistDTO playlist = playlistService.getById(playlistId);
-            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(playlist.getTracks());
-
-            List<TrackDTO> tracks = trackService.deleteTrackWithId(tracksResponseDTO.getTracks(), trackId);
-
-            return Response.ok(tracks).build();
-        }
-
-        return Response.status(Response.Status.BAD_REQUEST).build();
-    }
+//    @DELETE
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Path("/{track_id}")
+//    public Response deleteTrackFromPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {//
+//        return Response.status(Response.Status.BAD_REQUEST).build();
+//    }
 
     // Adds a track to a playlist
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/tracks/{track_id}")
-    public Response addTrackToPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {
-
-        // return json
-
-        return null;
-    }
+//    @POST
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Path("/tracks/{track_id}")
+//    public Response addTrackToPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {
+//        return Response.status(Response.Status.BAD_REQUEST).build();
+//    }
 
     @Inject
     public void setUserService(UserService userService) {

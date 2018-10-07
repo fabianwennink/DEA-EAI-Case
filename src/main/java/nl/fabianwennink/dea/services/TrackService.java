@@ -15,10 +15,4 @@ public class TrackService {
 
         return null;
     }
-
-    public List<TrackDTO> deleteTrackWithId(List<TrackDTO> tracks, int id) {
-        tracks.removeIf(track -> track.getId() == id);
-
-        return tracks;
-    }
 }
