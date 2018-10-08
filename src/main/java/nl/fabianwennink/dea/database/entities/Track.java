@@ -7,7 +7,7 @@ public class Track {
     private String performer;
     private int duration;
     private String album;
-    private int playCount;
+    private int playcount;
     private String publicationDate;
     private String description;
 
@@ -51,12 +51,12 @@ public class Track {
         this.album = album;
     }
 
-    public int getPlayCount() {
-        return playCount;
+    public int getPlaycount() {
+        return playcount;
     }
 
-    public void setPlayCount(int playCount) {
-        this.playCount = playCount;
+    public void setPlaycount(int playcount) {
+        this.playcount = playcount;
     }
 
     public String getPublicationDate() {

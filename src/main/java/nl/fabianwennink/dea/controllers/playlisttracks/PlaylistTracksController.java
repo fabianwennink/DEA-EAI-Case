@@ -27,11 +27,13 @@ public class PlaylistTracksController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylistTracks(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
         if(userService.tokenMatches(token)) {
-            List<TrackDTO> tracks = trackService.;
+            List<TrackDTO> tracks = trackService.getAllByPlaylistId(playlistId);
 
-            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(tracks);
+            if(tracks.size() > 0) {
+                TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(tracks);
 
-            return Response.ok(tracksResponseDTO).build();
+                return Response.ok(tracksResponseDTO).build();
+            }
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TrackDAO extends BaseDAO {
 
-    private static final String GET_TRACKS_BY_PLAYLIST_QUERY = "SELECT * FROM tracks JOIN playlisttracks pt WHERE pt.playlist_id = ?";
+    private static final String GET_TRACKS_BY_PLAYLIST_QUERY = "SELECT * FROM tracks tra JOIN playlisttracks pt ON pt.track_id = tra.id WHERE pt.playlist_id = ?";
 
     public List<Track> getAllByPlaylistId(int playlistId) {
         List<Track> tracks = new ArrayList<>();
@@ -34,10 +34,12 @@ public class TrackDAO extends BaseDAO {
                 track.setPerformer(resultSet.getString("performer"));
                 track.setDuration(resultSet.getInt("duration"));
                 track.setAlbum(resultSet.getString("album"));
-                track.setPlayCount(resultSet.getInt("playcount"));
-                track.setPublicationDate(resultSet.getDate("publicationCate").toString());
+                track.setPlaycount(resultSet.getInt("playcount"));
                 track.setDescription(resultSet.getString("description"));
                 track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
+
+                if(resultSet.getTimestamp("publicationDate") != null)
+                    track.setPublicationDate(resultSet.getTimestamp("publicationDate").toString());
 
                 tracks.add(track);
             }
