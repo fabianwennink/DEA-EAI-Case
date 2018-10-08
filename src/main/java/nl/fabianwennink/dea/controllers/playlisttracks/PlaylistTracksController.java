@@ -3,6 +3,8 @@ package nl.fabianwennink.dea.controllers.playlisttracks;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
+import nl.fabianwennink.dea.database.dao.TrackDAO;
+import nl.fabianwennink.dea.database.entities.Track;
 import nl.fabianwennink.dea.services.PlaylistService;
 import nl.fabianwennink.dea.services.TrackService;
 import nl.fabianwennink.dea.services.UserService;
@@ -25,11 +27,11 @@ public class PlaylistTracksController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylistTracks(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
         if(userService.tokenMatches(token)) {
-//            TracksResponseDTO tracks = trackService.get
-//
-//            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(playlist.getTracks());
-//
-//            return Response.ok(tracksResponseDTO).build();
+            List<TrackDTO> tracks = trackService.;
+
+            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(tracks);
+
+            return Response.ok(tracksResponseDTO).build();
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();

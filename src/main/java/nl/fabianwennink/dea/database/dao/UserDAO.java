@@ -15,7 +15,7 @@ public class UserDAO extends BaseDAO {
 
         Connection connection = null;
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet = null ;
 
         try {
             connection = this.getConnection();
