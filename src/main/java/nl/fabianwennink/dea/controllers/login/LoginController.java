@@ -22,6 +22,7 @@ public class LoginController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(LoginRequestDTO loginRequestDTO) {
         LoginResponseDTO dto = userService.authenticate(loginRequestDTO.getUser(), loginRequestDTO.getPassword());
+
         if(dto != null) {
             return Response.ok(dto).build();
         }

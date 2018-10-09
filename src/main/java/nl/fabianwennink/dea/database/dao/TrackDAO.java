@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TrackDAO extends BaseDAO {
 
-    private static final String GET_TRACKS_BY_PLAYLIST_QUERY = "SELECT * FROM tracks tra JOIN playlisttracks pt ON pt.track_id = tra.id WHERE pt.playlist_id = ?";
+    private static final String GET_TRACKS_BY_PLAYLIST_QUERY = "SELECT tra.* FROM tracks tra INNER JOIN playlisttracks pt ON pt.track_id = tra.id WHERE pt.playlist_id = ?";
 
     public List<Track> getAllByPlaylistId(int playlistId) {
         List<Track> tracks = new ArrayList<>();

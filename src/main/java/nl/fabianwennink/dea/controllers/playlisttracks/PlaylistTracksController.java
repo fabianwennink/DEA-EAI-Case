@@ -1,10 +1,7 @@
 package nl.fabianwennink.dea.controllers.playlisttracks;
 
-import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
-import nl.fabianwennink.dea.database.dao.TrackDAO;
-import nl.fabianwennink.dea.database.entities.Track;
 import nl.fabianwennink.dea.services.PlaylistService;
 import nl.fabianwennink.dea.services.TrackService;
 import nl.fabianwennink.dea.services.UserService;
