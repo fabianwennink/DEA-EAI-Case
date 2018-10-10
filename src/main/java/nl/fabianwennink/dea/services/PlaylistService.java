@@ -46,6 +46,17 @@ public class PlaylistService {
         return playlistDTOs;
     }
 
+    public boolean addNew(PlaylistDTO playlistDTO) {
+
+        // TODO naar mapper
+        Playlist playlist = new Playlist();
+        playlist.setId(playlistDTO.getId());
+        playlist.setName(playlistDTO.getName());
+        playlist.setOwner(playlistDTO.isOwner());
+
+        return playlistDAO.create(playlist);
+    }
+
     public int getTotalDuration() {
         return playlistDAO.getTotalDuration();
     }

@@ -12,6 +12,8 @@ public class PlaylistDAO extends BaseDAO {
     private static final String GET_ALL_PLAYLISTS_QUERY = "SELECT * FROM playlists";
     private static final String GET_TOTAL_DURATION_QUERY = "SELECT SUM(duration) AS `duration` FROM tracks";
     private static final String UPDATE_PLAYLIST_NAME_QUERY = "UPDATE playlists SET name = ? WHERE id = ?";
+    private static final String CREATE_NEW_PLAYLIST_QUERY = "INSERT INTO playlists (name, owner) VALUES(?,?)";
+
 
     public List<Playlist> getAll() {
         List<Playlist> response = new ArrayList<>();
@@ -60,6 +62,26 @@ public class PlaylistDAO extends BaseDAO {
         }
 
         return getAll();
+    }
+
+    public boolean create(Playlist playlist) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = this.getConnection();
+            statement = connection.prepareStatement(CREATE_NEW_PLAYLIST_QUERY);
+            statement.setString(1, playlist.getName());
+            statement.setBoolean(2, playlist.isOwner());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } finally {
+            this.close(connection, statement, null);
+        }
+
+        return true;
     }
 
     public int getTotalDuration() {

@@ -37,21 +37,26 @@ public class PlaylistsController {
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-//    // Adds a new playlist
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlistDTO) {
-//        if(userService.tokenMatches(token)) {
-//            if(playlistService.addNew(playlistDTO)) {
-//                PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlistService.getAll(), 103974);
-//
-//                return Response.ok(playlistResponseDTO).build();
-//            }
-//        }
-//
-//        return Response.status(Response.Status.BAD_REQUEST).build();
-//    }
+    // Adds a new playlist
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlistDTO) {
+        if(userService.tokenMatches(token)) {
+            playlistDTO.setOwner(true);
+
+            if(playlistService.addNew(playlistDTO)) {
+                List<PlaylistDTO> playlists = playlistService.getAll();
+                int playlistLength = playlistService.getTotalDuration();
+
+                PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlists, playlistLength);
+
+                return Response.ok(playlistResponseDTO).build();
+            }
+        }
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
 //
 //    // Deletes a playlist
 //    @DELETE
