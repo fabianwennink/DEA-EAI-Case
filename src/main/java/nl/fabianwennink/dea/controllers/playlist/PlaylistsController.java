@@ -1,5 +1,6 @@
 package nl.fabianwennink.dea.controllers.playlist;
 
+import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistResponseDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
@@ -29,9 +30,7 @@ public class PlaylistsController {
             List<PlaylistDTO> playlists = playlistService.getAll();
             int playlistLength = playlistService.getTotalDuration();
 
-            PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlists, playlistLength);
-
-            return Response.ok(playlistResponseDTO).build();
+            return Response.ok(createResponse(playlists, playlistLength)).build();
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();
@@ -49,9 +48,7 @@ public class PlaylistsController {
                 List<PlaylistDTO> playlists = playlistService.getAll();
                 int playlistLength = playlistService.getTotalDuration();
 
-                PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlists, playlistLength);
-
-                return Response.ok(playlistResponseDTO).build();
+                return Response.ok(createResponse(playlists, playlistLength)).build();
             }
         }
 
@@ -74,7 +71,7 @@ public class PlaylistsController {
 //
 //        return Response.status(Response.Status.BAD_REQUEST).build();
 //    }
-//
+
     // Updates a playlist
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
@@ -84,12 +81,18 @@ public class PlaylistsController {
             List<PlaylistDTO> playlists = playlistService.editTitle(playlistId, playlistDTO.getName());
             int playlistLength = playlistService.getTotalDuration();
 
-            PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlists, playlistLength);
-
-            return Response.ok(playlistResponseDTO).build();
+            return Response.ok(createResponse(playlists, playlistLength)).build();
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    private PlaylistResponseDTO createResponse(List<PlaylistDTO> playlists, int length) {
+        PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO();
+        playlistResponseDTO.setPlaylists(playlists);
+        playlistResponseDTO.setLength(length);
+
+        return playlistResponseDTO;
     }
 
     @Inject

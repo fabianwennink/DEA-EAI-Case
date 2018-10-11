@@ -3,6 +3,7 @@ package nl.fabianwennink.dea.services;
 import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
 import nl.fabianwennink.dea.database.dao.UserDAO;
 import nl.fabianwennink.dea.database.entities.User;
+import nl.fabianwennink.dea.database.entities.mappers.UserMapper;
 
 public class UserService {
 
@@ -12,12 +13,7 @@ public class UserService {
         User user = new UserDAO().getUser(username, password);
 
         if(user != null) {
-            // TODO verander in EntityToDTO mapper.
-            LoginResponseDTO response = new LoginResponseDTO();
-            response.setUser(user.getName());
-            response.setToken(user.getToken());
-
-            return response;
+            return UserMapper.getInstance().convertToDTO(user);
         }
 
         return null;

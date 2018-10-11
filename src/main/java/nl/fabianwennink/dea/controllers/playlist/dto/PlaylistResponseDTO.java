@@ -7,11 +7,6 @@ public class PlaylistResponseDTO {
     private List<PlaylistDTO> playlists;
     private int length;
 
-    public PlaylistResponseDTO(List<PlaylistDTO> playlists, int length) {
-        this.playlists = playlists;
-        this.length = length;
-    }
-
     /* GETTERS AND SETTERS REQUIRED FOR API TO WORK */
 
     public List<PlaylistDTO> getPlaylists() {
