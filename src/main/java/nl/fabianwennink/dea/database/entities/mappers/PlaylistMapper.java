@@ -15,7 +15,7 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
         Playlist playlist = new Playlist();
         playlist.setId(dto.getId());
         playlist.setName(dto.getName());
-        playlist.setOwner(dto.isOwner());
+        playlist.setOwnerId(-1);
 
         return playlist;
     }
@@ -25,7 +25,7 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
         PlaylistDTO dto = new PlaylistDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
-        dto.setOwner(entity.isOwner());
+        dto.setOwner(false);
 
         return dto;
     }

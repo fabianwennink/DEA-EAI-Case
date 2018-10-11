@@ -10,6 +10,7 @@ import java.util.List;
 
 public class PlaylistService {
 
+    private UserService userService;
     private PlaylistDAO playlistDAO;
 
     public List<PlaylistDTO> getAll() {
@@ -32,6 +33,11 @@ public class PlaylistService {
 
     public int getTotalDuration() {
         return playlistDAO.getTotalDuration();
+    }
+
+    @Inject
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Inject

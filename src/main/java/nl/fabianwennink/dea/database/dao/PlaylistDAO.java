@@ -9,10 +9,10 @@ import java.util.List;
 
 public class PlaylistDAO extends BaseDAO {
 
-    private static final String GET_ALL_PLAYLISTS_QUERY = "SELECT * FROM playlists";
-    private static final String GET_TOTAL_DURATION_QUERY = "SELECT SUM(duration) AS `duration` FROM tracks";
-    private static final String UPDATE_PLAYLIST_NAME_QUERY = "UPDATE playlists SET name = ? WHERE id = ?";
-    private static final String CREATE_NEW_PLAYLIST_QUERY = "INSERT INTO playlists (name, owner) VALUES(?,?)";
+    private static final String GET_ALL_PLAYLISTS_QUERY = "SELECT id, name, owner_id FROM playlist";
+    private static final String GET_TOTAL_DURATION_QUERY = "SELECT SUM(duration) AS `duration` FROM track";
+    private static final String UPDATE_PLAYLIST_NAME_QUERY = "UPDATE playlist SET name = ? WHERE id = ?";
+    private static final String CREATE_NEW_PLAYLIST_QUERY = "INSERT INTO playlist (name, owner_id) VALUES(?, ?)";
 
 
     public List<Playlist> getAll() {
@@ -31,7 +31,7 @@ public class PlaylistDAO extends BaseDAO {
                 Playlist playlist = new Playlist();
                 playlist.setId(resultSet.getInt("id"));
                 playlist.setName(resultSet.getString("name"));
-                playlist.setOwner(resultSet.getBoolean("owner"));
+                playlist.setOwnerId(resultSet.getInt("owner_id"));
 
                 response.add(playlist);
             }
@@ -72,7 +72,7 @@ public class PlaylistDAO extends BaseDAO {
             connection = this.getConnection();
             statement = connection.prepareStatement(CREATE_NEW_PLAYLIST_QUERY);
             statement.setString(1, playlist.getName());
-            statement.setBoolean(2, playlist.isOwner());
+            statement.setInt(2, playlist.getOwnerId());
             statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

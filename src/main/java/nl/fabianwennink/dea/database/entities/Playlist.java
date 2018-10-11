@@ -4,7 +4,7 @@ public class Playlist {
 
     private int id;
     private String name;
-    private boolean owner;
+    private int ownerId;
 
     public int getId() {
         return id;
@@ -22,11 +22,11 @@ public class Playlist {
         this.name = name;
     }
 
-    public boolean isOwner() {
-        return owner;
+    public int getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(boolean owner) {
-        this.owner = owner;
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
     }
 }

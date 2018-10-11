@@ -44,7 +44,7 @@ public class PlaylistsController {
         if(userService.tokenMatches(token)) {
             playlistDTO.setOwner(true);
 
-            if(playlistService.addNew(playlistDTO)) {
+            if(playlistService.addNew(playlistDTO, token)) {
                 List<PlaylistDTO> playlists = playlistService.getAll();
                 int playlistLength = playlistService.getTotalDuration();
 
