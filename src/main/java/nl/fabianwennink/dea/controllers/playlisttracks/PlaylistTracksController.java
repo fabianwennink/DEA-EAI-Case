@@ -2,6 +2,7 @@ package nl.fabianwennink.dea.controllers.playlisttracks;
 
 import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
+import nl.fabianwennink.dea.exceptions.UnauthorizedException;
 import nl.fabianwennink.dea.services.PlaylistService;
 import nl.fabianwennink.dea.services.TrackService;
 import nl.fabianwennink.dea.services.UserService;
@@ -23,7 +24,7 @@ public class PlaylistTracksController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylistTracks(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
-        if(userService.tokenMatches(token)) {
+        if(userService.authenticateToken(token) != null) {
             List<TrackDTO> tracks = trackService.getAllByPlaylistId(playlistId);
 
             if(tracks.size() > 0) {

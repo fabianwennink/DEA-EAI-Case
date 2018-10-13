@@ -1,4 +1,4 @@
-package nl.fabianwennink.dea.database.entities.mappers;
+package nl.fabianwennink.dea.exceptions;
 
 public class MethodNotImplementedException extends RuntimeException {
 }

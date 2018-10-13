@@ -2,16 +2,8 @@ package nl.fabianwennink.dea.controllers.login.dto;
 
 public class LoginResponseDTO {
 
-    private String token;
     private String user;
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+    private String token;
 
     public String getUser() {
         return user;
@@ -19,5 +11,13 @@ public class LoginResponseDTO {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

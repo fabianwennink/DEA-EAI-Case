@@ -20,7 +20,7 @@ public class TracksController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response tracks(@QueryParam("token") String token, @QueryParam("forPlaylist") int forPlaylist) {
-        if(userService.tokenMatches(token)) {
+        if(userService.authenticateToken(token)) {
 
         }
 

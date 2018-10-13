@@ -2,6 +2,7 @@ package nl.fabianwennink.dea.database.entities.mappers;
 
 import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
 import nl.fabianwennink.dea.database.entities.User;
+import nl.fabianwennink.dea.exceptions.MethodNotImplementedException;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class UserMapper implements Mapper<User, LoginResponseDTO> {
     @Override
     public User convertToEntity(LoginResponseDTO dto) {
         User user = new User();
-        user.setName(dto.getUser());
+        user.setUsername(dto.getUser());
         user.setToken(dto.getToken());
 
         return null;

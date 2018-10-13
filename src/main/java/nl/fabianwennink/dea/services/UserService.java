@@ -4,36 +4,45 @@ import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
 import nl.fabianwennink.dea.database.dao.UserDAO;
 import nl.fabianwennink.dea.database.entities.User;
 import nl.fabianwennink.dea.database.entities.mappers.UserMapper;
+import nl.fabianwennink.dea.exceptions.UnauthorizedException;
 
 import javax.inject.Inject;
+import java.util.UUID;
 
 public class UserService {
 
-    // TODO Remove hard-coded token, store somewhere idk
-    private static final String USER_TOKEN = "06e8dc08-fdc8-45c5-8";
-
     private UserDAO userDAO;
 
-    public LoginResponseDTO authenticate(String username, String password) {
+    public LoginResponseDTO authenticate(String username, String password) throws UnauthorizedException {
         User user = userDAO.getUser(username, password);
+
         if(user != null) {
-            return UserMapper.getInstance().convertToDTO(user);
+
+            // Generate a new token
+            user.setToken(issueToken());
+
+            // Try to store the token
+            if(userDAO.storeToken(user)) {
+                return UserMapper.getInstance().convertToDTO(user);
+            }
         }
 
-        return null;
+        throw new UnauthorizedException();
     }
 
-    public LoginResponseDTO authenticate(String token) {
-        User user = userDAO.getUser(token);
+    public int authenticateToken(String token) throws UnauthorizedException {
+        User user = userDAO.verifyToken(token);
+
         if(user != null) {
-            return UserMapper.getInstance().convertToDTO(user);
+            return user.getId();
         }
 
-        return null;
+        throw new UnauthorizedException();
     }
 
-    public boolean tokenMatches(String token) {
-        return token.equals(USER_TOKEN);
+    private String issueToken() {
+        // UUID randomUUID() might not be the best choice, but it works for now.
+        return UUID.randomUUID().toString();
     }
 
     @Inject

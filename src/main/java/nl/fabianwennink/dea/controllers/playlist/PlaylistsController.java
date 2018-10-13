@@ -1,13 +1,9 @@
 package nl.fabianwennink.dea.controllers.playlist;
 
-import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistResponseDTO;
-import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
-import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
-import nl.fabianwennink.dea.database.entities.Playlist;
+import nl.fabianwennink.dea.exceptions.UnauthorizedException;
 import nl.fabianwennink.dea.services.PlaylistService;
-import nl.fabianwennink.dea.services.TrackService;
 import nl.fabianwennink.dea.services.UserService;
 
 import javax.inject.Inject;
@@ -26,14 +22,17 @@ public class PlaylistsController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylists(@QueryParam("token") String token) {
-        if(userService.tokenMatches(token)) {
-            List<PlaylistDTO> playlists = playlistService.getAll();
-            int playlistLength = playlistService.getTotalDuration();
+        try {
+            int userID = userService.authenticateToken(token);
+            PlaylistResponseDTO dto = createResponse(
+                    playlistService.getAll(),
+                    playlistService.getTotalDuration()
+            );
 
-            return Response.ok(createResponse(playlists, playlistLength)).build();
+            return Response.ok(dto).build();
+        } catch (UnauthorizedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-
-        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     // Adds a new playlist
@@ -41,26 +40,31 @@ public class PlaylistsController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addPlaylist(@QueryParam("token") String token, PlaylistDTO playlistDTO) {
-        if(userService.tokenMatches(token)) {
+        try {
+            int userID = userService.authenticateToken(token);
             playlistDTO.setOwner(true);
 
-            if(playlistService.addNew(playlistDTO, token)) {
-                List<PlaylistDTO> playlists = playlistService.getAll();
-                int playlistLength = playlistService.getTotalDuration();
+            if(playlistService.addNew(playlistDTO)) {
+                PlaylistResponseDTO dto = createResponse(
+                        playlistService.getAll(),
+                        playlistService.getTotalDuration()
+                );
 
-                return Response.ok(createResponse(playlists, playlistLength)).build();
+                return Response.ok(dto).build();
             }
+        } catch (UnauthorizedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
-//
-//    // Deletes a playlist
+
+    // Deletes a playlist
 //    @DELETE
 //    @Produces(MediaType.APPLICATION_JSON)
 //    @Path("/{playlist_id}")
 //    public Response deletePlaylist(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
-//        if(userService.tokenMatches(token)) {
+//        if(userService.authenticateToken(token)) {
 //            if(playlistId > 0) {
 //                List<PlaylistDTO> playlists = playlistService.deleteWithId(playlistId);
 //                PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO(playlists, 1);
@@ -73,19 +77,18 @@ public class PlaylistsController {
 //    }
 
     // Updates a playlist
-    @PUT
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{playlist_id}")
-    public Response editPlaylist(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token, PlaylistDTO playlistDTO) {
-        if(userService.tokenMatches(token)) {
-            List<PlaylistDTO> playlists = playlistService.editTitle(playlistId, playlistDTO.getName());
-            int playlistLength = playlistService.getTotalDuration();
-
-            return Response.ok(createResponse(playlists, playlistLength)).build();
-        }
-
-        return Response.status(Response.Status.BAD_REQUEST).build();
-    }
+//    @PUT
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Path("/{playlist_id}")
+//    public Response editPlaylist(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token, PlaylistDTO playlistDTO) {
+//        if(userService.authenticateToken(token) != null) {
+//            PlaylistResponseDTO dto = createResponse(playlistService.getAll(), playlistService.getTotalDuration());
+//
+//            return Response.ok(dto).build();
+//        }
+//
+//        return Response.status(Response.Status.BAD_REQUEST).build();
+//    }
 
     private PlaylistResponseDTO createResponse(List<PlaylistDTO> playlists, int length) {
         PlaylistResponseDTO playlistResponseDTO = new PlaylistResponseDTO();
