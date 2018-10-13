@@ -13,6 +13,16 @@ public class UserService {
 
     private UserDAO userDAO;
 
+    /**
+     * Tries to log in the given user from the LoginResponseDTO.
+     * If the username:password combination is valid, a new authentication token will be generated and stored.
+     *
+     * @param username The username of a user.
+     * @param password The password of a user.
+     *
+     * @return A User if the username:password combination was valid.
+     * @throws UnauthorizedException If the username:password combination was invalid.
+     */
     public LoginResponseDTO authenticate(String username, String password) throws UnauthorizedException {
         User user = userDAO.getUser(username, password);
 
@@ -30,6 +40,14 @@ public class UserService {
         throw new UnauthorizedException();
     }
 
+    /**
+     * Verifies the given token and returns a user if the token was valid.
+     *
+     * @param token An authentication token.
+     *
+     * @return A User if the token is valid.
+     * @throws UnauthorizedException If the token was invalid.
+     */
     public int authenticateToken(String token) throws UnauthorizedException {
         User user = userDAO.verifyToken(token);
 
@@ -40,11 +58,21 @@ public class UserService {
         throw new UnauthorizedException();
     }
 
+    /**
+     * Generates a random authentication token.
+     * Note: randomUUID() might not be the best choice, but it works for this application.
+     *
+     * @return A random authentication token.
+     */
     private String issueToken() {
-        // UUID randomUUID() might not be the best choice, but it works for now.
         return UUID.randomUUID().toString();
     }
 
+    /**
+     * Injects an instance of UserDAO.
+     *
+     * @param userDAO A UserDAO.
+     */
     @Inject
     public void setUserDAO(UserDAO userDAO) {
         this.userDAO = userDAO;
