@@ -1,5 +1,7 @@
 package nl.fabianwennink.dea.controllers.tracks;
 
+import nl.fabianwennink.dea.controllers.tracks.dto.TracksResponseDTO;
+import nl.fabianwennink.dea.exceptions.UnauthorizedException;
 import nl.fabianwennink.dea.services.TrackService;
 import nl.fabianwennink.dea.services.UserService;
 
@@ -20,11 +22,17 @@ public class TracksController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response tracks(@QueryParam("token") String token, @QueryParam("forPlaylist") int forPlaylist) {
-        if(userService.authenticateToken(token)) {
+        try {
+            // Try to authenticate the user
+            userService.authenticateToken(token);
 
+            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+            tracksResponseDTO.setTracks(trackService.getAll());
+
+            return Response.ok(tracksResponseDTO).build();
+        } catch (UnauthorizedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-
-        return null;
     }
 
     @Inject

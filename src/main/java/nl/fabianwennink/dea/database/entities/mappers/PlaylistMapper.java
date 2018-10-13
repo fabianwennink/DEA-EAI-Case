@@ -11,7 +11,7 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
     private static PlaylistMapper mapper;
 
     @Override
-    public Playlist convertToEntity(PlaylistDTO dto) {
+    public Playlist convertToEntity(PlaylistDTO dto, Object... args) {
         Playlist playlist = new Playlist();
         playlist.setId(dto.getId());
         playlist.setName(dto.getName());
@@ -21,32 +21,39 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
     }
 
     @Override
-    public PlaylistDTO convertToDTO(Playlist entity) {
+    public PlaylistDTO convertToDTO(Playlist entity, Object... args) {
         PlaylistDTO dto = new PlaylistDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setOwner(false);
 
+        // If the first argument is set, and is an Integer, compare it to the owner ID
+        if(args.length > 0 && args[0] instanceof Integer) {
+            if((Integer)args[0] == entity.getOwnerId()) {
+                dto.setOwner(true);
+            }
+        }
+
         return dto;
     }
 
     @Override
-    public List<Playlist> convertToEntity(List<PlaylistDTO> dtos) {
+    public List<Playlist> convertToEntity(List<PlaylistDTO> dtos, Object... args) {
         List<Playlist> playlists = new ArrayList<>();
 
         for(PlaylistDTO dto : dtos) {
-            playlists.add(convertToEntity(dto));
+            playlists.add(convertToEntity(dto, args));
         }
 
         return playlists;
     }
 
     @Override
-    public List<PlaylistDTO> convertToDTO(List<Playlist> entities) {
+    public List<PlaylistDTO> convertToDTO(List<Playlist> entities, Object... args) {
         List<PlaylistDTO> playlists = new ArrayList<>();
 
         for(Playlist playlist : entities) {
-            playlists.add(convertToDTO(playlist));
+            playlists.add(convertToDTO(playlist, args));
         }
 
         return playlists;

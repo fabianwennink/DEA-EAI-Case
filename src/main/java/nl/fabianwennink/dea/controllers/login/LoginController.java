@@ -1,7 +1,6 @@
 package nl.fabianwennink.dea.controllers.login;
 
 import nl.fabianwennink.dea.controllers.login.dto.LoginRequestDTO;
-import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
 import nl.fabianwennink.dea.exceptions.UnauthorizedException;
 import nl.fabianwennink.dea.services.UserService;
 

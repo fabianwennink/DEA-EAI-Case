@@ -1,11 +1,7 @@
 package nl.fabianwennink.dea.database.entities.mappers;
 
-import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
-import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.controllers.tracks.dto.TrackDTO;
-import nl.fabianwennink.dea.database.entities.Playlist;
 import nl.fabianwennink.dea.database.entities.Track;
-import nl.fabianwennink.dea.database.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +11,7 @@ public class TrackMapper implements Mapper<Track, TrackDTO> {
     private static TrackMapper mapper;
 
     @Override
-    public Track convertToEntity(TrackDTO dto) {
+    public Track convertToEntity(TrackDTO dto, Object... args) {
         Track track = new Track();
         track.setId(dto.getId());
         track.setTitle(dto.getTitle());
@@ -27,11 +23,11 @@ public class TrackMapper implements Mapper<Track, TrackDTO> {
         track.setDescription(dto.getDescription());
         track.setOfflineAvailable(dto.isOfflineAvailable());
 
-        return null;
+        return track;
     }
 
     @Override
-    public TrackDTO convertToDTO(Track entity) {
+    public TrackDTO convertToDTO(Track entity, Object... args) {
         TrackDTO trackDTO = new TrackDTO();
         trackDTO.setId(entity.getId());
         trackDTO.setTitle(entity.getTitle());
@@ -43,26 +39,26 @@ public class TrackMapper implements Mapper<Track, TrackDTO> {
         trackDTO.setDescription(entity.getDescription());
         trackDTO.setOfflineAvailable(entity.isOfflineAvailable());
 
-        return null;
+        return trackDTO;
     }
 
     @Override
-    public List<Track> convertToEntity(List<TrackDTO> dtos) {
+    public List<Track> convertToEntity(List<TrackDTO> dtos, Object... args) {
         List<Track> tracks = new ArrayList<>();
 
         for(TrackDTO dto : dtos) {
-            tracks.add(convertToEntity(dto));
+            tracks.add(convertToEntity(dto, args));
         }
 
         return tracks;
     }
 
     @Override
-    public List<TrackDTO> convertToDTO(List<Track> entities) {
+    public List<TrackDTO> convertToDTO(List<Track> entities, Object... args) {
         List<TrackDTO> tracks = new ArrayList<>();
 
         for(Track track : entities) {
-            tracks.add(convertToDTO(track));
+            tracks.add(convertToDTO(track, args));
         }
 
         return tracks;

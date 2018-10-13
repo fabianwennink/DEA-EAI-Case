@@ -11,7 +11,7 @@ public class UserMapper implements Mapper<User, LoginResponseDTO> {
     private static UserMapper mapper;
 
     @Override
-    public User convertToEntity(LoginResponseDTO dto) {
+    public User convertToEntity(LoginResponseDTO dto, Object... args) {
         User user = new User();
         user.setUsername(dto.getUser());
         user.setToken(dto.getToken());
@@ -20,7 +20,7 @@ public class UserMapper implements Mapper<User, LoginResponseDTO> {
     }
 
     @Override
-    public LoginResponseDTO convertToDTO(User entity) {
+    public LoginResponseDTO convertToDTO(User entity, Object... args) {
         LoginResponseDTO dto = new LoginResponseDTO();
         dto.setUser(entity.getName());
         dto.setToken(entity.getToken());
@@ -29,12 +29,12 @@ public class UserMapper implements Mapper<User, LoginResponseDTO> {
     }
 
     @Override
-    public List<User> convertToEntity(List<LoginResponseDTO> dtos) throws MethodNotImplementedException {
+    public List<User> convertToEntity(List<LoginResponseDTO> dtos, Object... args) throws MethodNotImplementedException {
         throw new MethodNotImplementedException();
     }
 
     @Override
-    public List<LoginResponseDTO> convertToDTO(List<User> entities) throws MethodNotImplementedException {
+    public List<LoginResponseDTO> convertToDTO(List<User> entities, Object... args) throws MethodNotImplementedException {
         throw new MethodNotImplementedException();
     }
 

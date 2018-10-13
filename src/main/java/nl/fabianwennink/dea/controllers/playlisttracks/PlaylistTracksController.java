@@ -11,48 +11,78 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("/playlists/{playlist_id}/tracks")
 public class PlaylistTracksController {
 
     private UserService userService;
-    private PlaylistService playlistService;
     private TrackService trackService;
+    private PlaylistService playlistService;
 
     // Returns the tracks of a playlist
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlaylistTracks(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token) {
-        if(userService.authenticateToken(token) != null) {
-            List<TrackDTO> tracks = trackService.getAllByPlaylistId(playlistId);
+        try {
+            // Try to authenticate the user
+            userService.authenticateToken(token);
 
-            if(tracks.size() > 0) {
-                TracksResponseDTO tracksResponseDTO = new TracksResponseDTO(tracks);
+            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+            tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
 
-                return Response.ok(tracksResponseDTO).build();
+            return Response.ok(tracksResponseDTO).build();
+        } catch(UnauthorizedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+    }
+
+    // Deletes a track from a playlist
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{track_id}")
+    public Response deleteTrackFromPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {
+        try {
+            // Try to authenticate the user
+            int userID = userService.authenticateToken(token);
+
+            if(playlistId > 0 && trackId > 0) {
+                if(trackService.deleteFromPlaylist(playlistId, trackId, userID)) {
+                    TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+                    tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
+
+                    return Response.ok(tracksResponseDTO).build();
+                }
             }
+        } catch(UnauthorizedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    // Deletes a track from a playlist
-//    @DELETE
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Path("/{track_id}")
-//    public Response deleteTrackFromPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {//
-//        return Response.status(Response.Status.BAD_REQUEST).build();
-//    }
-
     // Adds a track to a playlist
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Path("/tracks/{track_id}")
-//    public Response addTrackToPlaylist(@PathParam("playlist_id") int playlistId, @PathParam("track_id") int trackId, @QueryParam("token") String token) {
-//        return Response.status(Response.Status.BAD_REQUEST).build();
-//    }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addTrackToPlaylist(@PathParam("playlist_id") int playlistId, @QueryParam("token") String token, TrackDTO trackDTO) {
+        try {
+            // Try to authenticate the user
+            int userID = userService.authenticateToken(token);
+
+            if(playlistService.isOwnedByUser(playlistId, userID)) {
+                if(trackService.addTrackToPlaylist(trackDTO, playlistId)) {
+                    TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+                    tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
+
+                    return Response.ok(tracksResponseDTO).build();
+                }
+            }
+        } catch(UnauthorizedException e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
 
     @Inject
     public void setUserService(UserService userService) {
@@ -60,12 +90,12 @@ public class PlaylistTracksController {
     }
 
     @Inject
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
+    public void setTrackService(TrackService trackService) {
+        this.trackService = trackService;
     }
 
     @Inject
-    public void setTrackService(TrackService trackService) {
-        this.trackService = trackService;
+    public void setPlaylistService(PlaylistService playlistService) {
+        this.playlistService = playlistService;
     }
 }

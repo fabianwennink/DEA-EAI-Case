@@ -12,21 +12,27 @@ public class TrackService {
 
     private TrackDAO trackDAO;
 
+    public List<TrackDTO> getAll() {
+        List<Track> tracks = trackDAO.getAll();
+
+        return TrackMapper.getInstance().convertToDTO(tracks);
+    }
+
     public List<TrackDTO> getAllByPlaylistId(int playlistId) {
         List<Track> tracks = trackDAO.getAllByPlaylistId(playlistId);
 
         return TrackMapper.getInstance().convertToDTO(tracks);
     }
 
-//    public TrackDTO getTrackByIdFromPlaylist(List<TrackDTO> tracks, int id) {
-//        for(TrackDTO track : tracks) {
-//            if(track.getId() == id) {
-//                return track;
-//            }
-//        }
-//
-//        return null;
-//    }
+    public boolean addTrackToPlaylist(TrackDTO trackDTO, int playlistId) {
+        Track track = TrackMapper.getInstance().convertToEntity(trackDTO);
+
+        return trackDAO.addToPlaylist(track, playlistId);
+    }
+
+    public boolean deleteFromPlaylist(int playlistId, int trackId, int userId) {
+        return trackDAO.deleteFromPlaylist(playlistId, trackId, userId);
+    }
 
     @Inject
     public void setTrackDAO(TrackDAO trackDAO) {

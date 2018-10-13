@@ -10,34 +10,36 @@ import java.util.List;
 
 public class PlaylistService {
 
-    private UserService userService;
     private PlaylistDAO playlistDAO;
 
-    public List<PlaylistDTO> getAll() {
+
+    public List<PlaylistDTO> getAll(int userId) {
         List<Playlist> playlists = playlistDAO.getAll();
 
-        return PlaylistMapper.getInstance().convertToDTO(playlists);
+        return PlaylistMapper.getInstance().convertToDTO(playlists, userId);
     }
 
-    public List<PlaylistDTO> editTitle(int playlistId, String name) {
-        List<Playlist> playlists = playlistDAO.editTitle(playlistId, name);
-
-        return PlaylistMapper.getInstance().convertToDTO(playlists);
+    public boolean editTitle(int playlistId, String name, int userId) {
+        return playlistDAO.editTitle(playlistId, name, userId);
     }
 
-    public boolean addNew(PlaylistDTO playlistDTO) {
+    public boolean add(PlaylistDTO playlistDTO, int userId) {
         Playlist playlist = PlaylistMapper.getInstance().convertToEntity(playlistDTO);
+        playlist.setOwnerId(userId);
 
         return playlistDAO.create(playlist);
+    }
+
+    public boolean delete(int playlistId, int userId) {
+        return playlistDAO.delete(playlistId, userId);
     }
 
     public int getTotalDuration() {
         return playlistDAO.getTotalDuration();
     }
 
-    @Inject
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public boolean isOwnedByUser(int playlistId, int userId) {
+        return playlistDAO.isOwnedByUser(playlistId, userId);
     }
 
     @Inject

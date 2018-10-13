@@ -6,10 +6,6 @@ public class TracksResponseDTO {
 
     private List<TrackDTO> tracks;
 
-    public TracksResponseDTO(List<TrackDTO> tracks) {
-        this.tracks = tracks;
-    }
-
     /* GETTERS AND SETTERS REQUIRED FOR API TO WORK */
 
     public List<TrackDTO> getTracks() {
