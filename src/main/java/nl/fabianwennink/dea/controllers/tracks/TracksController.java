@@ -27,7 +27,7 @@ public class TracksController {
             userService.authenticateToken(token);
 
             TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
-            tracksResponseDTO.setTracks(trackService.getAll());
+            tracksResponseDTO.setTracks(trackService.getAllNotInPlaylist(forPlaylist));
 
             return Response.ok(tracksResponseDTO).build();
         } catch (UnauthorizedException e) {

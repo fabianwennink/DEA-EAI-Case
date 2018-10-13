@@ -13,17 +13,6 @@ public class TrackService {
     private TrackDAO trackDAO;
 
     /**
-     * Returns a list of all the available tracks.
-     *
-     * @return A list of all tracks.
-     */
-    public List<TrackDTO> getAll() {
-        List<Track> tracks = trackDAO.getAll();
-
-        return TrackMapper.getInstance().convertToDTO(tracks);
-    }
-
-    /**
      * Returns a list of all tracks of a given playlist.
      *
      * @param playlistId The ID of a playlist.
@@ -31,7 +20,18 @@ public class TrackService {
      * @return A list of all tracks in a playlist.
      */
     public List<TrackDTO> getAllByPlaylistId(int playlistId) {
-        List<Track> tracks = trackDAO.getAllByPlaylistId(playlistId);
+        List<Track> tracks = trackDAO.getAllInPlaylist(playlistId);
+
+        return TrackMapper.getInstance().convertToDTO(tracks);
+    }
+
+    /**
+     * Returns a list of all the available tracks that are not yet in a playlist.
+     *
+     * @return A list of all tracks not in the given playlist.
+     */
+    public List<TrackDTO> getAllNotInPlaylist(int playlistId) {
+        List<Track> tracks = trackDAO.getAllNotInPlaylist(playlistId);
 
         return TrackMapper.getInstance().convertToDTO(tracks);
     }
