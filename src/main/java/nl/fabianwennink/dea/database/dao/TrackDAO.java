@@ -11,10 +11,10 @@ import java.util.List;
 
 public class TrackDAO extends BaseDAO {
 
-    private static final String GET_TRACKS_IN_PLAYLIST_QUERY = "SELECT tra.* FROM track tra INNER JOIN playlisttrack pt ON pt.track_id = tra.id WHERE pt.playlist_id = ?";
-    private static final String GET_TRACKS_NOT_IN_PLAYLIST_QUERY = "SELECT * FROM track WHERE id NOT IN (SELECT track_id FROM playlisttrack WHERE playlist_id = ?)";
+    private static final String GET_TRACKS_IN_PLAYLIST_QUERY = "SELECT tra.*, pt.offlineAvailable FROM track tra INNER JOIN playlisttrack pt ON pt.track_id = tra.id WHERE pt.playlist_id = ?";
+    private static final String GET_TRACKS_NOT_IN_PLAYLIST_QUERY = "SELECT *, 0 AS `offlineAvailable` FROM track WHERE id NOT IN (SELECT track_id FROM playlisttrack WHERE playlist_id = ?)";
     private static final String DELETE_TRACK_FROM_PLAYLIST_QUERY = "DELETE plt FROM playlisttrack plt JOIN playlist pl ON plt.playlist_id = pl.id WHERE plt.track_id = ? AND plt.playlist_id = ? AND pl.owner_id = ?";
-    private static final String ADD_TRACK_TO_PLAYLIST_QUERY = "INSERT INTO playlisttrack (track_id, playlist_id) VALUES (?, ?)";
+    private static final String ADD_TRACK_TO_PLAYLIST_QUERY = "INSERT INTO playlisttrack (track_id, playlist_id, offlineAvailable) VALUES (?, ?, ?)";
 
     /**
      * Returns a list of tracks that are added to the given playlist.
@@ -87,7 +87,6 @@ public class TrackDAO extends BaseDAO {
 
         Connection connection = null;
         PreparedStatement statement = null;
-        ResultSet resultSet = null ;
 
         try {
             connection = this.getConnection();
@@ -95,6 +94,7 @@ public class TrackDAO extends BaseDAO {
             statement = connection.prepareStatement(ADD_TRACK_TO_PLAYLIST_QUERY);
             statement.setInt(1, track.getId());
             statement.setInt(2, playlistId);
+            statement.setBoolean(3, track.isOfflineAvailable());
 
             if(statement.executeUpdate() > 0) {
                 stored = true;
@@ -102,7 +102,7 @@ public class TrackDAO extends BaseDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            this.close(connection, statement, resultSet);
+            this.close(connection, statement, null);
         }
 
         return stored;
