@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 
 public class UserDAO extends BaseDAO {
 
-    private static final String LOGIN_PASSWORD_USERNAME_QUERY = "SELECT id, name from user WHERE username = ? AND password = ?";
+    private static final String LOGIN_USER_QUERY = "SELECT id, name from user WHERE username = ? AND password = ?";
     private static final String FETCH_USER_BY_TOKEN_QUERY = "SELECT id, name from user WHERE token = ?";
     private static final String STORE_USER_TOKEN_QUERY = "UPDATE user SET token = ? WHERE id = ?";
 
@@ -22,7 +22,7 @@ public class UserDAO extends BaseDAO {
         try {
             connection = this.getConnection();
 
-            statement = connection.prepareStatement(LOGIN_PASSWORD_USERNAME_QUERY);
+            statement = connection.prepareStatement(LOGIN_USER_QUERY);
             statement.setString(1, username);
             statement.setString(2, password);
 

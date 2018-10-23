@@ -1,0 +1,17 @@
+language: java
+
+install: true
+
+addons:
+  sonarcloud:
+    organization: "fabianwennink-github"
+
+jdk:
+- oraclejdk8
+
+branches:
+  only:
+  - master
+
+script:
+- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
