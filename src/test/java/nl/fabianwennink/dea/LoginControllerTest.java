@@ -24,7 +24,7 @@ public class LoginControllerTest {
 
     private static final String USERNAME = "testuser";
     private static final String PASSWORD = "test";
-    private static final String TOKEN = "9516d318-4739-4164-960f-2da965d07c3d";
+    private static final String TOKEN = "test-token";
 
     @BeforeEach
     public void setUp() {
@@ -47,16 +47,16 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void tryAuthenticateCorrectUser() throws UnauthorizedException {
+    public void should_ReturnAuthenticatedUser_IfUserAuthenticated() throws UnauthorizedException {
         Mockito.when(userService.authenticate(requestDTO.getUser(), requestDTO.getPassword())).thenReturn(responseDTO);
 
         Response response = loginController.login(requestDTO);
 
-        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void tryAuthenticateIncorrectUser() throws UnauthorizedException {
+    public void should_ReturnUnauthorizedResponse_IfUserUnauthenticated() throws UnauthorizedException {
         Mockito.when(userService.authenticate(Mockito.anyString(), Mockito.anyString()))
                 .thenThrow(UnauthorizedException.class);
 
