@@ -12,6 +12,7 @@ jdk:
 branches:
   only:
   - master
+  - develop
 
 script:
 - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
