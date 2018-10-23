@@ -45,13 +45,11 @@ public class PlaylistTracksController {
             // Try to authenticate the user
             int userID = userService.authenticateToken(token);
 
-            if(playlistId > 0 && trackId > 0) {
-                if(trackService.deleteFromPlaylist(playlistId, trackId, userID)) {
-                    TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
-                    tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
+            if(playlistId > 0 && trackId > 0 && trackService.deleteFromPlaylist(playlistId, trackId, userID)) {
+                TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+                tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
 
-                    return Response.ok(tracksResponseDTO).build();
-                }
+                return Response.ok(tracksResponseDTO).build();
             }
         } catch(UnauthorizedException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -69,13 +67,11 @@ public class PlaylistTracksController {
             // Try to authenticate the user
             int userID = userService.authenticateToken(token);
 
-            if(playlistService.isOwnedByUser(playlistId, userID)) {
-                if(trackService.addTrackToPlaylist(trackDTO, playlistId)) {
-                    TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
-                    tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
+            if(playlistService.isOwnedByUser(playlistId, userID) && trackService.addTrackToPlaylist(trackDTO, playlistId)) {
+                TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+                tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
 
-                    return Response.ok(tracksResponseDTO).build();
-                }
+                return Response.ok(tracksResponseDTO).build();
             }
         } catch(UnauthorizedException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();

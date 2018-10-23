@@ -71,12 +71,10 @@ public class PlaylistsController {
             // Try to authenticate the user
             int userID = userService.authenticateToken(token);
 
-            if(playlistId > 0) {
-                if (playlistService.delete(playlistId, userID)) {
-                    PlaylistResponseDTO dto = createResponse(playlistService.getAll(userID), playlistService.getTotalDuration());
+            if (playlistId > 0 && playlistService.delete(playlistId, userID)) {
+                PlaylistResponseDTO dto = createResponse(playlistService.getAll(userID), playlistService.getTotalDuration());
 
-                    return Response.ok(dto).build();
-                }
+                return Response.ok(dto).build();
             }
         } catch(UnauthorizedException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -94,12 +92,10 @@ public class PlaylistsController {
             // Try to authenticate the user
             int userID = userService.authenticateToken(token);
 
-            if(playlistId > 0) {
-                if (playlistService.editTitle(playlistId, playlistDTO.getName(), userID)) {
-                    PlaylistResponseDTO dto = createResponse(playlistService.getAll(userID), playlistService.getTotalDuration());
+            if (playlistId > 0 && playlistService.editTitle(playlistId, playlistDTO.getName(), userID)) {
+                PlaylistResponseDTO dto = createResponse(playlistService.getAll(userID), playlistService.getTotalDuration());
 
-                    return Response.ok(dto).build();
-                }
+                return Response.ok(dto).build();
             }
         } catch(UnauthorizedException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();

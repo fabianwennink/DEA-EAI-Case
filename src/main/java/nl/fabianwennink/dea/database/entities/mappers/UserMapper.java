@@ -29,12 +29,12 @@ public class UserMapper implements Mapper<User, LoginResponseDTO> {
     }
 
     @Override
-    public List<User> convertToEntity(List<LoginResponseDTO> dtos, Object... args) throws MethodNotImplementedException {
+    public List<User> convertToEntity(List<LoginResponseDTO> dtos, Object... args) {
         throw new MethodNotImplementedException();
     }
 
     @Override
-    public List<LoginResponseDTO> convertToDTO(List<User> entities, Object... args) throws MethodNotImplementedException {
+    public List<LoginResponseDTO> convertToDTO(List<User> entities, Object... args) {
         throw new MethodNotImplementedException();
     }
 

@@ -12,8 +12,6 @@ public class TrackDTO {
     private String description;
     private boolean offlineAvailable;
 
-    public TrackDTO() {}
-
     /* GETTERS AND SETTERS REQUIRED FOR API TO WORK */
 
     public int getId() {

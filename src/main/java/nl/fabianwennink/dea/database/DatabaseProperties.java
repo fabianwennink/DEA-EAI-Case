@@ -2,9 +2,12 @@ package nl.fabianwennink.dea.database;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseProperties {
 
+    private static final Logger LOGGER = Logger.getLogger(DatabaseProperties.class.getName());
     private static DatabaseProperties dbProperties;
     private Properties properties;
 
@@ -16,7 +19,7 @@ public class DatabaseProperties {
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("database.properties"));
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Failed to load database properties file from resources.");
         }
     }
 

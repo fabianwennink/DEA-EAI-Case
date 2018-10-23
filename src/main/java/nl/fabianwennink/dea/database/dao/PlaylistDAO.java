@@ -36,6 +36,7 @@ public class PlaylistDAO extends BaseDAO {
                 response.add(playlist);
             }
         } catch (SQLException e) {
+
             System.out.println(e.getMessage());
         } finally {
             this.close(connection, statement, resultSet);
@@ -161,7 +162,7 @@ public class PlaylistDAO extends BaseDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
-            this.close(connection, statement, null);
+            this.close(connection, statement, resultSet);
         }
 
         return ownedBy;
