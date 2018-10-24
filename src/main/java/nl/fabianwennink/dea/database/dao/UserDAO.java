@@ -19,6 +19,8 @@ public class UserDAO extends BaseDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null ;
 
+        // performQuery(LOGIN_USER_QUERY, username, password);
+
         try {
             connection = this.getConnection();
 

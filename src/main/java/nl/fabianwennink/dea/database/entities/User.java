@@ -5,7 +5,6 @@ public class User {
     private int id;
     private String username;
     private String name;
-    private String password;
     private String token;
 
     public int getId() {

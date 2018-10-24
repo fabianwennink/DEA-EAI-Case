@@ -27,11 +27,9 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
         dto.setName(entity.getName());
         dto.setOwner(false);
 
-        // If the first argument is set, and is an Integer, compare it to the owner ID
-        if(args.length > 0 && args[0] instanceof Integer) {
-            if((Integer)args[0] == entity.getOwnerId()) {
-                dto.setOwner(true);
-            }
+        // If the first argument is an int, compare it to the owner ID
+        if(isOwner(args[0], entity)) {
+            dto.setOwner(true);
         }
 
         return dto;
@@ -65,5 +63,9 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
         }
 
         return mapper;
+    }
+
+    private boolean isOwner(Object obj, Playlist playlist) {
+        return (obj instanceof Integer && (Integer)obj == playlist.getOwnerId());
     }
 }
