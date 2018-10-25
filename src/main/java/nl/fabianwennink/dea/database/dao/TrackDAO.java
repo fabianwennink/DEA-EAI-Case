@@ -2,15 +2,13 @@ package nl.fabianwennink.dea.database.dao;
 
 import nl.fabianwennink.dea.database.entities.Track;
 
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TrackDAO extends BaseDAO {
 
     private static final String GET_TRACKS_IN_PLAYLIST_QUERY = "SELECT tra.*, pt.offlineAvailable FROM track tra INNER JOIN playlisttrack pt ON pt.track_id = tra.id WHERE pt.playlist_id = ?";
-    private static final String GET_TRACKS_NOT_IN_PLAYLIST_QUERY = "SELECT * FROM track WHERE id NOT IN (SELECT track_id FROM playlisttrack WHERE playlist_id = ?);";
+    private static final String GET_TRACKS_NOT_IN_PLAYLIST_QUERY = "SELECT *, 0 AS `offlineAvailable` FROM track WHERE id NOT IN (SELECT track_id FROM playlisttrack WHERE playlist_id = ?);";
     private static final String DELETE_TRACK_FROM_PLAYLIST_QUERY = "DELETE plt FROM playlisttrack plt JOIN playlist pl ON plt.playlist_id = pl.id WHERE plt.track_id = ? AND plt.playlist_id = ? AND pl.owner_id = ?";
     private static final String ADD_TRACK_TO_PLAYLIST_QUERY = "INSERT INTO playlisttrack (track_id, playlist_id, offlineAvailable) VALUES (?, ?, ?)";
 
@@ -72,49 +70,25 @@ public class TrackDAO extends BaseDAO {
      * @return A list of tracks.
      */
     private List<Track> getByPlaylistId(int playlistId, boolean reverse) {
-        List<Map<String, Object>> results;
-
-        if(reverse) {
-            results = this.performQuery(GET_TRACKS_NOT_IN_PLAYLIST_QUERY, playlistId);
-        } else {
-            results = this.performQuery(GET_TRACKS_IN_PLAYLIST_QUERY, playlistId);
-        }
-
-        return getTrackFromResult(results);
-    }
-
-    /**
-     * Returns a list of tracks that were fetched from the database.
-     *
-     * @param results A list containing the query results.
-     *
-     * @return A list of tracks.
-     */
-    private List<Track> getTrackFromResult(List<Map<String, Object>> results) {
         List<Track> tracks = new ArrayList<>();
+        String query = (reverse) ? GET_TRACKS_NOT_IN_PLAYLIST_QUERY : GET_TRACKS_IN_PLAYLIST_QUERY;
 
-        for(Map<String, Object> row : results) {
+        this.performQuery(query, resultSet -> {
             Track track = new Track();
-            track.setId((Integer)row.get("id"));
-            track.setTitle((String)row.get("title"));
-            track.setPerformer((String)row.get("performer"));
-            track.setDuration((Integer)row.get("duration"));
-            track.setAlbum((String)row.get("album"));
-            track.setPlaycount((Integer)row.get("playcount"));
-            track.setDescription((String)row.get("description"));
+            track.setId(resultSet.getInt("id"));
+            track.setTitle(resultSet.getString("title"));
+            track.setPerformer(resultSet.getString("performer"));
+            track.setDuration(resultSet.getInt("duration"));
+            track.setAlbum(resultSet.getString("album"));
+            track.setPlaycount(resultSet.getInt("playcount"));
+            track.setDescription(resultSet.getString("description"));
+            track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
 
-            // If offlineAvailable is 1 (TRUE), 0 (FALSE)
-            if(row.get("offlineAvailable") != null) {
-                track.setOfflineAvailable(((Boolean)row.get("offlineAvailable")));
-            } else {
-                track.setOfflineAvailable(false);
-            }
-
-            if(row.get("publicationDate") != null)
-                track.setPublicationDate(row.get("publicationDate").toString());
+            if(resultSet.getTimestamp("publicationDate") != null)
+                track.setPublicationDate(resultSet.getTimestamp("publicationDate").toString());
 
             tracks.add(track);
-        }
+        }, playlistId);
 
         return tracks;
     }

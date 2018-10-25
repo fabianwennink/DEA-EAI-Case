@@ -2,12 +2,6 @@ package nl.fabianwennink.dea.database.dao;
 
 import nl.fabianwennink.dea.database.entities.User;
 
-import java.sql.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Map;
-
 public class UserDAO extends BaseDAO {
 
     private static final String LOGIN_USER_QUERY = "SELECT id, name from user WHERE username = ? AND password = ?";
@@ -17,11 +11,10 @@ public class UserDAO extends BaseDAO {
     public User getUser(String username, String password) {
         User user = new User();
 
-        List<Map<String, Object>> results = performQuery(LOGIN_USER_QUERY, username, password);
-        for(Map<String, Object> row : results) {
-            user.setId((Integer)row.get("id"));
-            user.setName((String)row.get("name"));
-        }
+        this.performQuery(LOGIN_USER_QUERY, resultSet -> {
+            user.setId(resultSet.getInt("id"));
+            user.setName(resultSet.getString("name"));
+        }, username, password);
 
         return user;
     }
@@ -29,13 +22,11 @@ public class UserDAO extends BaseDAO {
     public User verifyToken(String token) {
         User user = new User();
 
-        List<Map<String, Object>> results = performQuery(FETCH_USER_BY_TOKEN_QUERY, token);
-
-        for(Map<String, Object> row : results) {
-            user.setId((Integer)row.get("id"));
-            user.setName((String)row.get("name"));
+        this.performQuery(FETCH_USER_BY_TOKEN_QUERY, resultSet -> {
+            user.setId(resultSet.getInt("id"));
+            user.setName(resultSet.getString("name"));
             user.setToken(token);
-        }
+        }, token);
 
         return user;
     }
