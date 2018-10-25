@@ -5,6 +5,8 @@ import nl.fabianwennink.dea.database.entities.User;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Map;
 
 public class UserDAO extends BaseDAO {
 
@@ -15,28 +17,10 @@ public class UserDAO extends BaseDAO {
     public User getUser(String username, String password) {
         User user = new User();
 
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null ;
-
-        // performQuery(LOGIN_USER_QUERY, username, password);
-
-        try {
-            connection = this.getConnection();
-
-            statement = connection.prepareStatement(LOGIN_USER_QUERY);
-            statement.setString(1, username);
-            statement.setString(2, password);
-
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                user.setId(resultSet.getInt("id"));
-                user.setName(resultSet.getString("name"));
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            this.close(connection, statement, resultSet);
+        List<Map<String, Object>> results = performQuery(LOGIN_USER_QUERY, username, password);
+        for(Map<String, Object> row : results) {
+            user.setId((Integer)row.get("id"));
+            user.setName((String)row.get("name"));
         }
 
         return user;
@@ -45,53 +29,18 @@ public class UserDAO extends BaseDAO {
     public User verifyToken(String token) {
         User user = new User();
 
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null ;
+        List<Map<String, Object>> results = performQuery(FETCH_USER_BY_TOKEN_QUERY, token);
 
-        try {
-            connection = this.getConnection();
-
-            statement = connection.prepareStatement(FETCH_USER_BY_TOKEN_QUERY);
-            statement.setString(1, token);
-
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                user.setId(resultSet.getInt("id"));
-                user.setName(resultSet.getString("name"));
-                user.setToken(token);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            this.close(connection, statement, resultSet);
+        for(Map<String, Object> row : results) {
+            user.setId((Integer)row.get("id"));
+            user.setName((String)row.get("name"));
+            user.setToken(token);
         }
 
         return user;
     }
 
     public boolean storeToken(User user) {
-        boolean stored = false;
-
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-        try {
-            connection = this.getConnection();
-
-            statement = connection.prepareStatement(STORE_USER_TOKEN_QUERY);
-            statement.setString(1, user.getToken());
-            statement.setInt(2, user.getId());
-
-            if(statement.executeUpdate() > 0) {
-                stored = true;
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            this.close(connection, statement, null);
-        }
-
-        return stored;
+        return this.performUpdate(STORE_USER_TOKEN_QUERY, user.getToken(), user.getId());
     }
 }

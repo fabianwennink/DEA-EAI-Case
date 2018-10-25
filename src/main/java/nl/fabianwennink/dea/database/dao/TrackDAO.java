@@ -2,17 +2,15 @@ package nl.fabianwennink.dea.database.dao;
 
 import nl.fabianwennink.dea.database.entities.Track;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TrackDAO extends BaseDAO {
 
     private static final String GET_TRACKS_IN_PLAYLIST_QUERY = "SELECT tra.*, pt.offlineAvailable FROM track tra INNER JOIN playlisttrack pt ON pt.track_id = tra.id WHERE pt.playlist_id = ?";
-    private static final String GET_TRACKS_NOT_IN_PLAYLIST_QUERY = "SELECT *, 0 AS `offlineAvailable` FROM track WHERE id NOT IN (SELECT track_id FROM playlisttrack WHERE playlist_id = ?)";
+    private static final String GET_TRACKS_NOT_IN_PLAYLIST_QUERY = "SELECT * FROM track WHERE id NOT IN (SELECT track_id FROM playlisttrack WHERE playlist_id = ?);";
     private static final String DELETE_TRACK_FROM_PLAYLIST_QUERY = "DELETE plt FROM playlisttrack plt JOIN playlist pl ON plt.playlist_id = pl.id WHERE plt.track_id = ? AND plt.playlist_id = ? AND pl.owner_id = ?";
     private static final String ADD_TRACK_TO_PLAYLIST_QUERY = "INSERT INTO playlisttrack (track_id, playlist_id, offlineAvailable) VALUES (?, ?, ?)";
 
@@ -48,30 +46,7 @@ public class TrackDAO extends BaseDAO {
      * @return TRUE if the track was deleted, FALSE if it wasn't.
      */
     public boolean deleteFromPlaylist(int playlistId, int trackId, int userId) {
-        boolean deleted = false;
-
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null ;
-
-        try {
-            connection = this.getConnection();
-
-            statement = connection.prepareStatement(DELETE_TRACK_FROM_PLAYLIST_QUERY);
-            statement.setInt(1, trackId);
-            statement.setInt(2, playlistId);
-            statement.setInt(3, userId);
-
-            if(statement.executeUpdate() > 0) {
-                deleted = true;
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            this.close(connection, statement, resultSet);
-        }
-
-        return deleted;
+        return this.performUpdate(DELETE_TRACK_FROM_PLAYLIST_QUERY, trackId, playlistId, userId);
     }
 
     /**
@@ -83,29 +58,7 @@ public class TrackDAO extends BaseDAO {
      * @return TRUE if the track was added, FALSE if it wasn't.
      */
     public boolean addToPlaylist(Track track, int playlistId) {
-        boolean stored = false;
-
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-        try {
-            connection = this.getConnection();
-
-            statement = connection.prepareStatement(ADD_TRACK_TO_PLAYLIST_QUERY);
-            statement.setInt(1, track.getId());
-            statement.setInt(2, playlistId);
-            statement.setBoolean(3, track.isOfflineAvailable());
-
-            if(statement.executeUpdate() > 0) {
-                stored = true;
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            this.close(connection, statement, null);
-        }
-
-        return stored;
+        return this.performUpdate(ADD_TRACK_TO_PLAYLIST_QUERY, track.getId(), playlistId, track.isOfflineAvailable());
     }
 
     /**
@@ -119,58 +72,46 @@ public class TrackDAO extends BaseDAO {
      * @return A list of tracks.
      */
     private List<Track> getByPlaylistId(int playlistId, boolean reverse) {
-        List<Track> tracks = new ArrayList<>();
+        List<Map<String, Object>> results;
 
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null ;
-
-        try {
-            connection = this.getConnection();
-
-            if(reverse) {
-                statement = connection.prepareStatement(GET_TRACKS_NOT_IN_PLAYLIST_QUERY);
-            } else {
-                statement = connection.prepareStatement(GET_TRACKS_IN_PLAYLIST_QUERY);
-            }
-
-            statement.setInt(1, playlistId);
-
-            resultSet = statement.executeQuery();
-            tracks = getTrackFromResult(resultSet);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            this.close(connection, statement, resultSet);
+        if(reverse) {
+            results = this.performQuery(GET_TRACKS_NOT_IN_PLAYLIST_QUERY, playlistId);
+        } else {
+            results = this.performQuery(GET_TRACKS_IN_PLAYLIST_QUERY, playlistId);
         }
 
-        return tracks;
+        return getTrackFromResult(results);
     }
 
     /**
      * Returns a list of tracks that were fetched from the database.
      *
-     * @param resultSet The ResultSet containing the query results.
+     * @param results A list containing the query results.
      *
      * @return A list of tracks.
-     * @throws SQLException If there was a problem with the ResultSet.
      */
-    private List<Track> getTrackFromResult(ResultSet resultSet) throws SQLException {
+    private List<Track> getTrackFromResult(List<Map<String, Object>> results) {
         List<Track> tracks = new ArrayList<>();
 
-        while (resultSet.next()) {
+        for(Map<String, Object> row : results) {
             Track track = new Track();
-            track.setId(resultSet.getInt("id"));
-            track.setTitle(resultSet.getString("title"));
-            track.setPerformer(resultSet.getString("performer"));
-            track.setDuration(resultSet.getInt("duration"));
-            track.setAlbum(resultSet.getString("album"));
-            track.setPlaycount(resultSet.getInt("playcount"));
-            track.setDescription(resultSet.getString("description"));
-            track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
+            track.setId((Integer)row.get("id"));
+            track.setTitle((String)row.get("title"));
+            track.setPerformer((String)row.get("performer"));
+            track.setDuration((Integer)row.get("duration"));
+            track.setAlbum((String)row.get("album"));
+            track.setPlaycount((Integer)row.get("playcount"));
+            track.setDescription((String)row.get("description"));
 
-            if(resultSet.getTimestamp("publicationDate") != null)
-                track.setPublicationDate(resultSet.getTimestamp("publicationDate").toString());
+            // If offlineAvailable is 1 (TRUE), 0 (FALSE)
+            if(row.get("offlineAvailable") != null) {
+                track.setOfflineAvailable(((Boolean)row.get("offlineAvailable")));
+            } else {
+                track.setOfflineAvailable(false);
+            }
+
+            if(row.get("publicationDate") != null)
+                track.setPublicationDate(row.get("publicationDate").toString());
 
             tracks.add(track);
         }
