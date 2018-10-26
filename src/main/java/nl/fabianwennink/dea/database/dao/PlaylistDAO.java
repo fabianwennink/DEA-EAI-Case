@@ -16,7 +16,6 @@ public class PlaylistDAO extends BaseDAO {
     private static final String DELETE_PLAYLIST_QUERY = "DELETE FROM playlist WHERE id = ? AND owner_id = ?";
     private static final String IS_OWNED_BY_USER_QUERY = "SELECT 1 FROM playlist WHERE id = ? AND owner_id = ?";
 
-
     public List<Playlist> getAll() {
         List<Playlist> response = new ArrayList<>();
 
