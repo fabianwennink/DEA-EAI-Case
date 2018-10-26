@@ -1,4 +1,4 @@
-package nl.fabianwennink.dea;
+package nl.fabianwennink.dea.controllers;
 
 import nl.fabianwennink.dea.controllers.login.LoginController;
 import nl.fabianwennink.dea.controllers.login.dto.LoginRequestDTO;

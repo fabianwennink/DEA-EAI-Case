@@ -16,7 +16,8 @@ public class UserDAO extends BaseDAO {
             user.setName(resultSet.getString("name"));
         }, username, password);
 
-        return user;
+        // if the name is not set, the user wasn't properly fetched aka doesn't exist.
+        return (user.getName() != null) ? user : null;
     }
 
     public User verifyToken(String token) {
@@ -28,7 +29,8 @@ public class UserDAO extends BaseDAO {
             user.setToken(token);
         }, token);
 
-        return user;
+        // if the name is not set, the user wasn't properly fetched aka doesn't exist.
+        return (user.getName() != null) ? user : null;
     }
 
     public boolean storeToken(User user) {

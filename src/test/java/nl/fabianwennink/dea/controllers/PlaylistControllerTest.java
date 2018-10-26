@@ -1,4 +1,4 @@
-package nl.fabianwennink.dea;
+package nl.fabianwennink.dea.controllers;
 
 import nl.fabianwennink.dea.controllers.playlist.PlaylistsController;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
@@ -108,7 +108,7 @@ public class PlaylistControllerTest {
     }
 
     @Test // PlaylistController.deletePlaylist
-    public void should_ReturnBadRequest_IfPlaylistIdIsZero() {
+    public void should_ReturnBadRequest_IfPlaylistIdIsInvalid() {
         Mockito.when(playlistService.delete(INVALID_PLAYLIST, AUTHENTICATED_USER_ID)).thenReturn(true);
 
         Response response = playlistsController.deletePlaylist(INVALID_PLAYLIST, TOKEN);

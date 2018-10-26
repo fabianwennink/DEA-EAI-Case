@@ -26,13 +26,17 @@ public class TracksController {
             // Try to authenticate the user
             userService.authenticateToken(token);
 
-            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
-            tracksResponseDTO.setTracks(trackService.getAllNotInPlaylist(forPlaylist));
+            if(forPlaylist > 0) {
+                TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+                tracksResponseDTO.setTracks(trackService.getAllNotInPlaylist(forPlaylist));
 
-            return Response.ok(tracksResponseDTO).build();
+                return Response.ok(tracksResponseDTO).build();
+            }
         } catch (UnauthorizedException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @Inject

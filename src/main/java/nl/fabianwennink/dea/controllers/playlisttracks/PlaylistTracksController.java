@@ -27,13 +27,17 @@ public class PlaylistTracksController {
             // Try to authenticate the user
             userService.authenticateToken(token);
 
-            TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
-            tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
+            if(playlistId > 0) {
+                TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
+                tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
 
-            return Response.ok(tracksResponseDTO).build();
+                return Response.ok(tracksResponseDTO).build();
+            }
         } catch(UnauthorizedException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     // Deletes a track from a playlist
@@ -45,7 +49,8 @@ public class PlaylistTracksController {
             // Try to authenticate the user
             int userID = userService.authenticateToken(token);
 
-            if(playlistId > 0 && trackId > 0 && trackService.deleteFromPlaylist(playlistId, trackId, userID)) {
+            if(playlistId > 0 && trackId > 0 && playlistService.isOwnedByUser(playlistId, userID)
+                    && trackService.deleteFromPlaylist(playlistId, trackId, userID)) {
                 TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
                 tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
 
@@ -67,7 +72,8 @@ public class PlaylistTracksController {
             // Try to authenticate the user
             int userID = userService.authenticateToken(token);
 
-            if(playlistService.isOwnedByUser(playlistId, userID) && trackService.addTrackToPlaylist(trackDTO, playlistId)) {
+            if(playlistId > 0 && playlistService.isOwnedByUser(playlistId, userID)
+                    && trackService.addTrackToPlaylist(trackDTO, playlistId)) {
                 TracksResponseDTO tracksResponseDTO = new TracksResponseDTO();
                 tracksResponseDTO.setTracks(trackService.getAllByPlaylistId(playlistId));
 
