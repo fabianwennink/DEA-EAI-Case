@@ -1,5 +1,6 @@
 package nl.fabianwennink.dea.controllers;
 
+import nl.fabianwennink.dea.TestConstants;
 import nl.fabianwennink.dea.controllers.login.LoginController;
 import nl.fabianwennink.dea.controllers.login.dto.LoginRequestDTO;
 import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
@@ -14,17 +15,13 @@ import org.mockito.MockitoAnnotations;
 
 import javax.ws.rs.core.Response;
 
-public class LoginControllerTest {
+public class LoginControllerTest extends TestConstants {
 
     @Mock private UserService userService;
     private LoginController loginController;
 
     private LoginRequestDTO requestDTO;
     private LoginResponseDTO responseDTO;
-
-    private static final String USERNAME = "testuser";
-    private static final String PASSWORD = "test";
-    private static final String TOKEN = "test-token";
 
     @BeforeEach
     public void setUp() {
@@ -37,13 +34,13 @@ public class LoginControllerTest {
 
         // Create the login request
         requestDTO = new LoginRequestDTO();
-        requestDTO.setUser(USERNAME);
-        requestDTO.setPassword(PASSWORD);
+        requestDTO.setUser(LOGIN_USERNAME);
+        requestDTO.setPassword(LOGIN_PASSWORD);
 
         // Create the response
         responseDTO = new LoginResponseDTO();
-        responseDTO.setUser(USERNAME);
-        responseDTO.setToken(TOKEN);
+        responseDTO.setUser(LOGIN_USERNAME);
+        responseDTO.setToken(CORRECT_TOKEN);
     }
 
     @Test

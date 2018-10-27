@@ -1,5 +1,6 @@
 package nl.fabianwennink.dea.controllers;
 
+import nl.fabianwennink.dea.TestConstants;
 import nl.fabianwennink.dea.controllers.playlist.PlaylistsController;
 import nl.fabianwennink.dea.controllers.playlist.dto.PlaylistDTO;
 import nl.fabianwennink.dea.exceptions.UnauthorizedException;
@@ -15,20 +16,13 @@ import org.mockito.MockitoAnnotations;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 
-public class PlaylistControllerTest {
+public class PlaylistControllerTest extends TestConstants {
 
     @Mock private PlaylistService playlistService;
     @Mock private UserService userService;
     private PlaylistsController playlistsController;
 
     private PlaylistDTO dto;
-
-    private static final int AUTHENTICATED_USER_ID = 1;
-    private static final String TOKEN = "test-token";
-    private static final String INCORRECT_TOKEN = "incorrect-made-up-token";
-
-    private static final int VALID_PLAYLIST = 1;
-    private static final int INVALID_PLAYLIST = -1;
 
     @BeforeEach
     public void setUp() throws UnauthorizedException {
@@ -47,7 +41,7 @@ public class PlaylistControllerTest {
 
         // Mock userService.authenticateToken methods
         Mockito.when(userService.authenticateToken(Mockito.anyString())).thenThrow(UnauthorizedException.class);
-        Mockito.when(userService.authenticateToken(Mockito.eq(TOKEN))).thenReturn(AUTHENTICATED_USER_ID);
+        Mockito.when(userService.authenticateToken(Mockito.eq(CORRECT_TOKEN))).thenReturn(AUTHENTICATED_USER_ID);
 
         // Mock playlistService methods, just to be sure the response at least contains values
         Mockito.when(playlistService.getAll(AUTHENTICATED_USER_ID)).thenReturn(new ArrayList<>());
@@ -56,7 +50,7 @@ public class PlaylistControllerTest {
 
     @Test // PlaylistController.getPlaylists
     public void should_ReturnAllPlaylists_IfUserAuthenticated() {
-        Response response = playlistsController.getPlaylists(TOKEN);
+        Response response = playlistsController.getPlaylists(CORRECT_TOKEN);
 
         Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
@@ -73,7 +67,7 @@ public class PlaylistControllerTest {
         // Mock playlistService.add method, always returns true (playlist does not exist).
         Mockito.when(playlistService.add(Mockito.any(PlaylistDTO.class), Mockito.eq(AUTHENTICATED_USER_ID))).thenReturn(true);
 
-        Response response = playlistsController.addPlaylist(TOKEN, dto);
+        Response response = playlistsController.addPlaylist(CORRECT_TOKEN, dto);
 
         Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
@@ -83,7 +77,7 @@ public class PlaylistControllerTest {
         // Mock playlistService.add method, always returns true (playlist already exist).
         Mockito.when(playlistService.add(Mockito.any(PlaylistDTO.class), Mockito.eq(AUTHENTICATED_USER_ID))).thenReturn(false);
 
-        Response response = playlistsController.addPlaylist(TOKEN, dto);
+        Response response = playlistsController.addPlaylist(CORRECT_TOKEN, dto);
 
         Assertions.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
@@ -100,72 +94,72 @@ public class PlaylistControllerTest {
 
     @Test // PlaylistController.deletePlaylist
     public void should_DeletePlaylistAndReturnAll_IfPlaylistDeleted() {
-        Mockito.when(playlistService.delete(VALID_PLAYLIST, AUTHENTICATED_USER_ID)).thenReturn(true);
+        Mockito.when(playlistService.delete(VALID_PLAYLIST_ID, AUTHENTICATED_USER_ID)).thenReturn(true);
 
-        Response response = playlistsController.deletePlaylist(VALID_PLAYLIST, TOKEN);
+        Response response = playlistsController.deletePlaylist(VALID_PLAYLIST_ID, CORRECT_TOKEN);
 
         Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test // PlaylistController.deletePlaylist
     public void should_ReturnBadRequest_IfPlaylistIdIsInvalid() {
-        Mockito.when(playlistService.delete(INVALID_PLAYLIST, AUTHENTICATED_USER_ID)).thenReturn(true);
+        Mockito.when(playlistService.delete(INVALID_PLAYLIST_ID, AUTHENTICATED_USER_ID)).thenReturn(true);
 
-        Response response = playlistsController.deletePlaylist(INVALID_PLAYLIST, TOKEN);
+        Response response = playlistsController.deletePlaylist(INVALID_PLAYLIST_ID, CORRECT_TOKEN);
 
         Assertions.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Test // PlaylistController.deletePlaylist
     public void should_ReturnBadRequest_IfPlaylistNotDeleted() {
-        Mockito.when(playlistService.delete(VALID_PLAYLIST, AUTHENTICATED_USER_ID)).thenReturn(false);
+        Mockito.when(playlistService.delete(VALID_PLAYLIST_ID, AUTHENTICATED_USER_ID)).thenReturn(false);
 
-        Response response = playlistsController.deletePlaylist(VALID_PLAYLIST, TOKEN);
+        Response response = playlistsController.deletePlaylist(VALID_PLAYLIST_ID, CORRECT_TOKEN);
 
         Assertions.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Test // PlaylistController.deletePlaylist
     public void should_ReturnUnauthorized_IfUserUnauthorizedInDeletePlaylist() {
-        Mockito.when(playlistService.delete(VALID_PLAYLIST, AUTHENTICATED_USER_ID)).thenReturn(false);
+        Mockito.when(playlistService.delete(VALID_PLAYLIST_ID, AUTHENTICATED_USER_ID)).thenReturn(false);
 
-        Response response = playlistsController.deletePlaylist(VALID_PLAYLIST, INCORRECT_TOKEN);
+        Response response = playlistsController.deletePlaylist(VALID_PLAYLIST_ID, INCORRECT_TOKEN);
 
         Assertions.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void should_EditPlaylistAndReturnAll_IfPlaylistWasEdited() {
-        Mockito.when(playlistService.editTitle(VALID_PLAYLIST, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(true);
+        Mockito.when(playlistService.editTitle(VALID_PLAYLIST_ID, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(true);
 
-        Response response = playlistsController.editPlaylist(VALID_PLAYLIST, TOKEN, dto);
+        Response response = playlistsController.editPlaylist(VALID_PLAYLIST_ID, CORRECT_TOKEN, dto);
 
         Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void should_ReturnBadRequest_IfEditPlaylistIdIsZero() {
-        Mockito.when(playlistService.editTitle(INVALID_PLAYLIST, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(true);
+        Mockito.when(playlistService.editTitle(INVALID_PLAYLIST_ID, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(true);
 
-        Response response = playlistsController.editPlaylist(INVALID_PLAYLIST, TOKEN, dto);
+        Response response = playlistsController.editPlaylist(INVALID_PLAYLIST_ID, CORRECT_TOKEN, dto);
 
         Assertions.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void should_ReturnBadRequest_IfPlaylistWasNotEdited() {
-        Mockito.when(playlistService.editTitle(VALID_PLAYLIST, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(false);
+        Mockito.when(playlistService.editTitle(VALID_PLAYLIST_ID, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(false);
 
-        Response response = playlistsController.editPlaylist(VALID_PLAYLIST, TOKEN, dto);
+        Response response = playlistsController.editPlaylist(VALID_PLAYLIST_ID, CORRECT_TOKEN, dto);
 
         Assertions.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void should_ReturnUnauthorized_IfUserUnauthorizedInEditPlaylist() {
-        Mockito.when(playlistService.editTitle(INVALID_PLAYLIST, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(true);
+        Mockito.when(playlistService.editTitle(INVALID_PLAYLIST_ID, "NewTitle", AUTHENTICATED_USER_ID)).thenReturn(true);
 
-        Response response = playlistsController.editPlaylist(VALID_PLAYLIST, INCORRECT_TOKEN, dto);
+        Response response = playlistsController.editPlaylist(VALID_PLAYLIST_ID, INCORRECT_TOKEN, dto);
 
         Assertions.assertEquals(Response.Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
     }
