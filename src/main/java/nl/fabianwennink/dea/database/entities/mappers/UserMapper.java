@@ -2,8 +2,8 @@ package nl.fabianwennink.dea.database.entities.mappers;
 
 import nl.fabianwennink.dea.controllers.login.dto.LoginResponseDTO;
 import nl.fabianwennink.dea.database.entities.User;
-import nl.fabianwennink.dea.exceptions.MethodNotImplementedException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserMapper implements Mapper<User, LoginResponseDTO> {
@@ -13,10 +13,10 @@ public class UserMapper implements Mapper<User, LoginResponseDTO> {
     @Override
     public User convertToEntity(LoginResponseDTO dto, Object... args) {
         User user = new User();
-        user.setUsername(dto.getUser());
+        user.setName(dto.getUser());
         user.setToken(dto.getToken());
 
-        return null;
+        return user;
     }
 
     @Override
@@ -30,12 +30,24 @@ public class UserMapper implements Mapper<User, LoginResponseDTO> {
 
     @Override
     public List<User> convertToEntity(List<LoginResponseDTO> dtos, Object... args) {
-        throw new MethodNotImplementedException();
+        List<User> users = new ArrayList<>();
+
+        for(LoginResponseDTO dto : dtos) {
+            users.add(convertToEntity(dto, args));
+        }
+
+        return users;
     }
 
     @Override
     public List<LoginResponseDTO> convertToDTO(List<User> entities, Object... args) {
-        throw new MethodNotImplementedException();
+        List<LoginResponseDTO> dtos = new ArrayList<>();
+
+        for(User user : entities) {
+            dtos.add(convertToDTO(user, args));
+        }
+
+        return dtos;
     }
 
     public static UserMapper getInstance() {

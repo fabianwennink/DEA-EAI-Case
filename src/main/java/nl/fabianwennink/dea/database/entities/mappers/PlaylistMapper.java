@@ -28,7 +28,7 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
         dto.setOwner(false);
 
         // If the first argument is an int, compare it to the owner ID
-        if(isOwner(args[0], entity)) {
+        if(args.length > 0 && isOwner(args[0], entity)) {
             dto.setOwner(true);
         }
 

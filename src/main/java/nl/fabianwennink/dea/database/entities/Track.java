@@ -10,6 +10,7 @@ public class Track {
     private int playcount;
     private String publicationDate;
     private String description;
+    private boolean offlineAvailable;
 
     public int getId() {
         return id;
@@ -82,6 +83,4 @@ public class Track {
     public void setOfflineAvailable(boolean offlineAvailable) {
         this.offlineAvailable = offlineAvailable;
     }
-
-    private boolean offlineAvailable;
 }
