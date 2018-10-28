@@ -126,6 +126,16 @@ public class PlaylistTracksControllerTest extends TestConstants {
     }
 
     @Test // playlistTracksController.addTrackToPlaylist
+    public void should_ReturnBadRequest_IfPlaylistInvalid() {
+        this.setMockAddToPlaylist(true);
+        this.setMockOwnedByUser(true);
+
+        Response response = playlistTracksController.addTrackToPlaylist(INVALID_PLAYLIST_ID, CORRECT_TOKEN, new TrackDTO());
+
+        Assertions.assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
+
+    @Test // playlistTracksController.addTrackToPlaylist
     public void should_ReturnBadRequest_IfTrackNotAdded() {
         this.setMockAddToPlaylist(false);
         this.setMockOwnedByUser(true);

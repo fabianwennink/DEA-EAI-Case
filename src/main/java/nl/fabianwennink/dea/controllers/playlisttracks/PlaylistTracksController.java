@@ -87,6 +87,11 @@ public class PlaylistTracksController {
     }
 
     @Inject
+    public void setPlaylistService(PlaylistService playlistService) {
+        this.playlistService = playlistService;
+    }
+
+    @Inject
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
@@ -94,10 +99,5 @@ public class PlaylistTracksController {
     @Inject
     public void setTrackService(TrackService trackService) {
         this.trackService = trackService;
-    }
-
-    @Inject
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
     }
 }
