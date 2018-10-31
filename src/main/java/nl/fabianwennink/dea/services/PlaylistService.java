@@ -37,7 +37,10 @@ public class PlaylistService {
      * @return TRUE if the title was changed, FALSE if it wasn't.
      */
     public boolean editTitle(int playlistId, String name, int userId) {
-        return playlistDAO.editTitle(playlistId, name, userId);
+        Playlist playlist = playlistDAO.getSingle(playlistId);
+        playlist.setName(name);
+
+        return (playlist.getOwnerId() == userId) && playlistDAO.persist(playlist);
     }
 
     /**
@@ -52,7 +55,7 @@ public class PlaylistService {
         Playlist playlist = PlaylistMapper.getInstance().convertToEntity(playlistDTO);
         playlist.setOwnerId(userId);
 
-        return playlistDAO.create(playlist);
+        return playlistDAO.persist(playlist);
     }
 
     /**
@@ -65,7 +68,11 @@ public class PlaylistService {
      * @return TRUE if the playlist was deleted, FALSE if it wasn't.
      */
     public boolean delete(int playlistId, int userId) {
-        return playlistDAO.delete(playlistId, userId);
+        Playlist playlist = new Playlist();
+        playlist.setId(playlistId);
+        playlist.setOwnerId(userId);
+
+        return playlistDAO.delete(playlist);
     }
 
     /**

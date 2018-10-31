@@ -51,12 +51,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/java/resources</directory>
-            </resource>
-        </resources>
-
         <finalName>DEA-EAI</finalName>
 
         <pluginManagement>

@@ -4,36 +4,36 @@ import nl.fabianwennink.dea.database.entities.User;
 
 public class UserDAO extends BaseDAO {
 
-    private static final String LOGIN_USER_QUERY = "SELECT id, name from user WHERE username = ? AND password = ?";
-    private static final String FETCH_USER_BY_TOKEN_QUERY = "SELECT id, name from user WHERE token = ?";
-    private static final String STORE_USER_TOKEN_QUERY = "UPDATE user SET token = ? WHERE id = ?";
+    private static final String LOGIN_USER_QUERY = "SELECT u FROM User u WHERE u.username = :username AND u.password = :password"; // id, name
+    private static final String FETCH_USER_BY_TOKEN_QUERY = "SELECT u from User u WHERE u.token = :token"; // id, name
 
-    public User getUser(String username, String password) {
-        User user = new User();
-
-        this.performQuery(LOGIN_USER_QUERY, resultSet -> {
-            user.setId(resultSet.getInt("id"));
-            user.setName(resultSet.getString("name"));
-        }, username, password);
+    public User getSingle(String username, String password) {
+        User user = (User) entityManager.createQuery(LOGIN_USER_QUERY)
+                .setParameter("username", username).setParameter("password", password)
+                .getSingleResult();
 
         // if the name is not set, the user wasn't properly fetched aka doesn't exist.
         return (user.getName() != null) ? user : null;
     }
 
     public User verifyToken(String token) {
-        User user = new User();
-
-        this.performQuery(FETCH_USER_BY_TOKEN_QUERY, resultSet -> {
-            user.setId(resultSet.getInt("id"));
-            user.setName(resultSet.getString("name"));
-            user.setToken(token);
-        }, token);
+        User user = (User) entityManager.createQuery(FETCH_USER_BY_TOKEN_QUERY)
+                .setParameter("token", token)
+                .getSingleResult();
 
         // if the name is not set, the user wasn't properly fetched aka doesn't exist.
         return (user.getName() != null) ? user : null;
     }
 
-    public boolean storeToken(User user) {
-        return this.performUpdate(STORE_USER_TOKEN_QUERY, user.getToken(), user.getId());
+    public boolean persist(User user) {
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist(user);
+            entityManager.getTransaction().commit();
+        } catch(Exception e) {
+            return false;
+        }
+
+        return true;
     }
 }

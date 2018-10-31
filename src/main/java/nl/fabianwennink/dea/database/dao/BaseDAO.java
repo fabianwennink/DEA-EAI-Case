@@ -2,16 +2,21 @@ package nl.fabianwennink.dea.database.dao;
 
 import nl.fabianwennink.dea.database.DatabaseProperties;
 import nl.fabianwennink.dea.database.ResultInterface;
+import nl.fabianwennink.dea.database.utils.JPAUtil;
 
+import javax.persistence.EntityManager;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class BaseDAO {
 
-    private static final Logger LOGGER = Logger.getLogger(BaseDAO.class.getName());
+    protected EntityManager entityManager;
+
+    protected static final Logger LOGGER = Logger.getLogger(BaseDAO.class.getName());
 
     public BaseDAO() {
+        loadEntityManager();
         loadDriver();
     }
 
@@ -96,6 +101,10 @@ public abstract class BaseDAO {
 
             bindCount++;
         }
+    }
+
+    private void loadEntityManager() {
+        entityManager = JPAUtil.getEntityManagerFactory(DatabaseProperties.getPersistenceName()).createEntityManager();
     }
 
     private void loadDriver() {

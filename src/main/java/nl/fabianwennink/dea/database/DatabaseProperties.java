@@ -33,6 +33,15 @@ public class DatabaseProperties {
     }
 
     /**
+     * Returns the JPA persistence unit name.
+     *
+     * @return The persistence unit name.
+     */
+    public static String getPersistenceName() {
+        return getInstance().properties.getProperty("persistenceUnit");
+    }
+
+    /**
      * Returns the SQL connection string.
      *
      * @return The SQL connection string.

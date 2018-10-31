@@ -24,7 +24,7 @@ public class UserService {
      * @throws UnauthorizedException If the username:password combination was invalid.
      */
     public LoginResponseDTO authenticate(String username, String password) throws UnauthorizedException {
-        User user = userDAO.getUser(username, password);
+        User user = userDAO.getSingle(username, password);
 
         if(user != null) {
 
@@ -32,7 +32,7 @@ public class UserService {
             user.setToken(issueToken());
 
             // Try to store the token
-            if(userDAO.storeToken(user)) {
+            if(userDAO.persist(user)) {
                 return UserMapper.getInstance().convertToDTO(user);
             }
         }

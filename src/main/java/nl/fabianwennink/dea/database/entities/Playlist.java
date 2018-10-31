@@ -1,9 +1,20 @@
 package nl.fabianwennink.dea.database.entities;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="playlist")
 public class Playlist {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private int id;
+
+    @Column(name="name")
     private String name;
+
+    @Column(name="owner_id")
     private int ownerId;
 
     public int getId() {

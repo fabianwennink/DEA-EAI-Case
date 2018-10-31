@@ -13,9 +13,13 @@ public class PlaylistMapper implements Mapper<Playlist, PlaylistDTO> {
     @Override
     public Playlist convertToEntity(PlaylistDTO dto, Object... args) {
         Playlist playlist = new Playlist();
-        playlist.setId(dto.getId());
         playlist.setName(dto.getName());
         playlist.setOwnerId(-1);
+
+        // Omly set the ID if it's valid, required for persisting to the database.
+        if(dto.getId() > 0) {
+            playlist.setId(dto.getId());
+        }
 
         return playlist;
     }

@@ -1,15 +1,38 @@
 package nl.fabianwennink.dea.database.entities;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="track")
 public class Track {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private int id;
+
+    @Column(name="title")
     private String title;
+
+    @Column(name="performer")
     private String performer;
+
+    @Column(name="duration")
     private int duration;
+
+    @Column(name="album")
     private String album;
+
+    @Column(name="playcount")
     private int playcount;
+
+    @Column(name="publicationDate")
     private String publicationDate;
+
+    @Column(name="description")
     private String description;
+
+    @Column(name="offlineAvailable")
     private boolean offlineAvailable;
 
     public int getId() {
